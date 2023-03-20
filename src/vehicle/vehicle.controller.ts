@@ -2,13 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { VehicleService } from './vehicle.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
+import { TCreateVehicleRes } from './interfaces/vehicle-response.interface';
 
-@Controller('vehicle')
+@Controller('vehicles')
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
   @Post()
-  create(@Body() createVehicleDto: CreateVehicleDto) {
+  create(@Body() createVehicleDto: CreateVehicleDto): Promise<TCreateVehicleRes> {
     return this.vehicleService.create(createVehicleDto);
   }
 

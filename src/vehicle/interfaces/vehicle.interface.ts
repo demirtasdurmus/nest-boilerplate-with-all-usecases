@@ -3,12 +3,12 @@ export interface IVehicle {
   type: string;
   make: string;
   model: string;
-  year: string;
+  year: number;
   price: number;
   km: number;
   lat: number;
   lng: number;
   approved: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -1,7 +1,6 @@
 import { IsLatitude, IsLongitude, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { TCreateVehicleReq } from '../interfaces/vehicle-request.interface';
 
-export class CreateVehicleDto implements TCreateVehicleReq {
+export class CreateVehicleDto {
   @IsString()
   @IsNotEmpty()
   type: string;

@@ -4,8 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DynamicTestModule } from './lib/dynamic/dynamic-test.module';
-import { HttpLogger } from './middleware/http-logger.middleware';
-import { CLogger, fLogger } from './middleware/logger.middleware';
+import { HttpLogger } from './middlewares/http-logger.middleware';
+import { CLogger, fLogger } from './middlewares/logger.middleware';
 import { VehicleModule } from './vehicle/vehicle.module';
 
 @Module({

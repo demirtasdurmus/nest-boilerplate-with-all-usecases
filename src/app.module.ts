@@ -1,7 +1,9 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
-import { TestModule } from './lib/test.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { DynamicTestModule } from './lib/dynamic-test.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 
 @Module({
@@ -15,10 +17,12 @@ import { VehicleModule } from './vehicle/vehicle.module';
         return connection;
       },
     }),
-    TestModule.forRoot(),
+    DynamicTestModule.forRoot('Im for dynamic root'),
     VehicleModule,
   ],
+  controllers: [AppController],
   providers: [
+    AppService,
     {
       provide: APP_PIPE,
       useValue: new ValidationPipe({ whitelist: true }),

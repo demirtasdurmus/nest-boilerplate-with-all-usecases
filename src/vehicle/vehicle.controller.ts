@@ -9,7 +9,7 @@ export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
   @Post()
-  create(@Body() createVehicleDto: CreateVehicleDto): Promise<IVehicle> {
+  async create(@Body() createVehicleDto: CreateVehicleDto): Promise<IVehicle> {
     return this.vehicleService.create(createVehicleDto);
   }
 

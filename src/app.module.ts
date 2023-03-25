@@ -1,9 +1,10 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod, ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DynamicTestModule } from './lib/dynamic/dynamic-test.module';
+import { CLogger, fLogger } from './middleware/logger.middleware';
 import { VehicleModule } from './vehicle/vehicle.module';
 
 @Module({
@@ -29,4 +30,11 @@ import { VehicleModule } from './vehicle/vehicle.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(CLogger, fLogger)
+      .exclude({ path: 'others', method: RequestMethod.GET })
+      .forRoutes({ path: 'dynamic', method: RequestMethod.ALL });
+  }
+}

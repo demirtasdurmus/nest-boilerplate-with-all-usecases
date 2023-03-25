@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
   HttpStatus,
   Param,
+  ParseBoolPipe,
   ParseEnumPipe,
   ParseUUIDPipe,
   Query,
@@ -13,6 +15,7 @@ import {
 import { AppService } from './app.service';
 import { joiTestSchema } from './pipes/joi-test.schema';
 import { JoiValidation } from './pipes/joi-validation.pipe';
+import { PipeUser, UserById } from './pipes/user-by-id.pipe';
 
 export enum STATUS {
   ACTIVE = 'ACTIVE',
@@ -48,6 +51,10 @@ export class AppController {
   getPipes(
     @Param('id', ParseUUIDPipe) id: string,
     @Query('status', new ParseEnumPipe(STATUS, { errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) status: STATUS,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Query('activeOnly', new DefaultValuePipe(false), ParseBoolPipe) activeOnly: boolean,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Param('id', UserById) user: PipeUser,
   ) {
     return this.appService.testParsePipe(id, status);
   }

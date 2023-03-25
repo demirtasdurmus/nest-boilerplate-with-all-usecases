@@ -1,14 +1,18 @@
-import { DynamicModule, Global, Module } from '@nestjs/common';
+import { DynamicModule, Global, Module, Provider } from '@nestjs/common';
 import { DynamicTestService } from './dynamic-test.service';
+import { TEST_OPTIONS } from './options.constant';
 
 @Global()
 @Module({})
 export class DynamicTestModule {
-  public static forRoot(arg: string): DynamicModule {
-    const dynamicTestProvider = new DynamicTestService(arg);
+  public static forRoot(options: object): DynamicModule {
+    const optionsProvider: Provider<object | unknown> = {
+      provide: TEST_OPTIONS,
+      useValue: options || {},
+    };
     return {
       module: DynamicTestModule,
-      providers: [{ provide: DynamicTestService, useValue: dynamicTestProvider }],
+      providers: [DynamicTestService, optionsProvider],
       exports: [DynamicTestService],
     };
   }

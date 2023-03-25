@@ -22,7 +22,7 @@ import { VehicleModule } from './vehicle/vehicle.module';
         return connection;
       },
     }),
-    DynamicTestModule.forRoot('Im for dynamic root'),
+    DynamicTestModule.forRoot({ name: 'first conf value', value: 2 }),
     VehicleModule,
   ],
   controllers: [AppController],

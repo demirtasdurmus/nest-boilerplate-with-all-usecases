@@ -13,9 +13,12 @@ import {
   UseGuards,
   UseInterceptors,
   UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 
 import { AppService } from './app.service';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { CurrentUserDto } from './decorators/current-user.dto';
 import { Roles } from './decorators/roles.decorator';
 import { AuthGuard } from './guards/auth.guard';
 import { RolesGuard } from './guards/roles.guard';
@@ -102,5 +105,12 @@ export class AppController {
         resolve('success');
       }, 6000);
     });
+  }
+
+  @Get('user')
+  async testUserParamDecorator(
+    @CurrentUser('id', new ValidationPipe({ validateCustomDecorators: true })) user: CurrentUserDto,
+  ) {
+    return user;
   }
 }

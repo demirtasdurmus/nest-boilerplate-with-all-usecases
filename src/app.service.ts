@@ -29,4 +29,8 @@ export class AppService {
   async testJoiValidationPipe(data: any) {
     return data;
   }
+
+  async testRoleGuard(data: any) {
+    return data;
+  }
 }

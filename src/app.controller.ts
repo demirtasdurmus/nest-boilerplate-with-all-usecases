@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 
 import { AppService } from './app.service';
+import { Roles } from './decorators/roles.decorator';
 import { AuthGuard } from './guards/auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { joiTestSchema } from './pipes/joi-test.schema';
@@ -61,5 +62,11 @@ export class AppController {
     @Param('id', UserById) user: PipeUser,
   ) {
     return this.appService.testParsePipe(id, status);
+  }
+
+  @Get('roles')
+  @Roles('admin')
+  getRoles() {
+    return this.appService.testRoleGuard('roles');
   }
 }

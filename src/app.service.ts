@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DynamicTestService } from './lib/dynamic/dynamic-test.service';
 
 @Injectable()
@@ -11,5 +11,13 @@ export class AppService {
 
   async testDynamicModule(): Promise<string> {
     return this.dynamicService.getDynamicData();
+  }
+
+  async testHttpExeption() {
+    throw new HttpException(
+      { status: HttpStatus.FORBIDDEN, error: 'This is a custom error message' },
+      HttpStatus.BAD_REQUEST,
+      { cause: new Error('Custom error with cause') },
+    );
   }
 }

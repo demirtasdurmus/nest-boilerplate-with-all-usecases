@@ -15,4 +15,9 @@ export class AppController {
   getDynamicData() {
     return this.appService.testDynamicModule();
   }
+
+  @Get('exception')
+  getException() {
+    return this.appService.testHttpExeption();
+  }
 }

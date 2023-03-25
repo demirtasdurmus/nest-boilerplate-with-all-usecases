@@ -17,6 +17,7 @@ import {
 } from '@nestjs/common';
 
 import { AppService } from './app.service';
+import { CombinedAuth } from './decorators/combined-auth.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { CurrentUserDto } from './decorators/current-user.dto';
 import { Roles } from './decorators/roles.decorator';
@@ -108,9 +109,15 @@ export class AppController {
   }
 
   @Get('user')
-  async testUserParamDecorator(
+  testUserParamDecorator(
     @CurrentUser('id', new ValidationPipe({ validateCustomDecorators: true })) user: CurrentUserDto,
   ) {
     return user;
+  }
+
+  @Get('combined-auth')
+  @CombinedAuth('admin')
+  testCombinedAuth() {
+    return 'success';
   }
 }

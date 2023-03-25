@@ -1,8 +1,9 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod, ValidationPipe } from '@nestjs/common';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { MongoException } from './filters/mongodb-exception.filter';
 import { DynamicTestModule } from './lib/dynamic/dynamic-test.module';
 import { HttpLogger } from './middlewares/http-logger.middleware';
 import { CLogger, fLogger } from './middlewares/logger.middleware';
@@ -28,6 +29,10 @@ import { VehicleModule } from './vehicle/vehicle.module';
     {
       provide: APP_PIPE,
       useValue: new ValidationPipe({ whitelist: true }),
+    },
+    {
+      provide: APP_FILTER,
+      useClass: MongoException,
     },
   ],
 })

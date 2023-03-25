@@ -20,4 +20,8 @@ export class AppService {
       { cause: new Error('Custom error with cause'), description: 'Some error description' },
     );
   }
+
+  async testParsePipe(id: string) {
+    return 'Reached service level:' + id;
+  }
 }

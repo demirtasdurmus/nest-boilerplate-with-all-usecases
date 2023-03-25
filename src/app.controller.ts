@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
 
 import { AppService } from './app.service';
 
@@ -19,5 +19,10 @@ export class AppController {
   @Get('exception')
   getException() {
     return this.appService.testHttpExeption();
+  }
+
+  @Get('pipes/:id')
+  getPipes(@Param('id', ParseUUIDPipe) id: string) {
+    return this.appService.testParsePipe(id);
   }
 }

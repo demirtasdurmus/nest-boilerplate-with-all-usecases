@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DynamicTestService } from './lib/dynamic-test.service';
+import { DynamicTestService } from './lib/dynamic/dynamic-test.service';
 
 @Injectable()
 export class AppService {

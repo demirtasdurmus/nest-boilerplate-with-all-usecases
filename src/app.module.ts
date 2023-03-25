@@ -3,7 +3,7 @@ import { APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DynamicTestModule } from './lib/dynamic-test.module';
+import { DynamicTestModule } from './lib/dynamic/dynamic-test.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 
 @Module({

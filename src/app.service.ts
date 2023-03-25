@@ -17,7 +17,7 @@ export class AppService {
     throw new HttpException(
       { status: HttpStatus.FORBIDDEN, error: 'This is a custom error message' },
       HttpStatus.BAD_REQUEST,
-      { cause: new Error('Custom error with cause') },
+      { cause: new Error('Custom error with cause'), description: 'Some error description' },
     );
   }
 }

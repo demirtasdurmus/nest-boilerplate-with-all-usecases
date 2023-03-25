@@ -25,4 +25,8 @@ export class AppService {
   async testParsePipe(id: string, status: STATUS) {
     return 'Reached service level:' + id + status;
   }
+
+  async testJoiValidationPipe(data: any) {
+    return data;
+  }
 }

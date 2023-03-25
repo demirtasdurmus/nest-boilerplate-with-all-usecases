@@ -1,6 +1,18 @@
-import { Controller, Get, HttpStatus, Param, ParseEnumPipe, ParseUUIDPipe, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  ParseEnumPipe,
+  ParseUUIDPipe,
+  Query,
+  UsePipes,
+} from '@nestjs/common';
 
 import { AppService } from './app.service';
+import { joiTestSchema } from './pipes/joi-test.schema';
+import { JoiValidation } from './pipes/joi-validation.pipe';
 
 export enum STATUS {
   ACTIVE = 'ACTIVE',
@@ -24,6 +36,12 @@ export class AppController {
   @Get('exception')
   getException() {
     return this.appService.testHttpExeption();
+  }
+
+  @Get('pipes')
+  @UsePipes(new JoiValidation(joiTestSchema))
+  getValidationPipes(@Body() data: any) {
+    return this.appService.testJoiValidationPipe(data);
   }
 
   @Get('pipes/:id')

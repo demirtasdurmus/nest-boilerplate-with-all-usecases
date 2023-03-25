@@ -1,6 +1,7 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
+import { TestModule } from './lib/test.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 
 @Module({
@@ -14,6 +15,7 @@ import { VehicleModule } from './vehicle/vehicle.module';
         return connection;
       },
     }),
+    TestModule.forRoot(),
     VehicleModule,
   ],
   providers: [

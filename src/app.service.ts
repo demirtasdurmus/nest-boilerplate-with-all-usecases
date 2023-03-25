@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { STATUS } from './app.controller';
 import { DynamicTestService } from './lib/dynamic/dynamic-test.service';
 
 @Injectable()
@@ -21,7 +22,7 @@ export class AppService {
     );
   }
 
-  async testParsePipe(id: string) {
-    return 'Reached service level:' + id;
+  async testParsePipe(id: string, status: STATUS) {
+    return 'Reached service level:' + id + status;
   }
 }

@@ -1,6 +1,11 @@
-import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, ParseEnumPipe, ParseUUIDPipe, Query } from '@nestjs/common';
 
 import { AppService } from './app.service';
+
+export enum STATUS {
+  ACTIVE = 'ACTIVE',
+  PASSIVE = 'PASSIVE',
+}
 
 @Controller()
 export class AppController {
@@ -22,7 +27,10 @@ export class AppController {
   }
 
   @Get('pipes/:id')
-  getPipes(@Param('id', ParseUUIDPipe) id: string) {
-    return this.appService.testParsePipe(id);
+  getPipes(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('status', new ParseEnumPipe(STATUS, { errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) status: STATUS,
+  ) {
+    return this.appService.testParsePipe(id, status);
   }
 }

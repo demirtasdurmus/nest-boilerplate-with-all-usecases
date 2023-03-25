@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DynamicTestModule } from './lib/dynamic/dynamic-test.module';
+import { HttpLogger } from './middleware/http-logger.middleware';
 import { CLogger, fLogger } from './middleware/logger.middleware';
 import { VehicleModule } from './vehicle/vehicle.module';
 
@@ -35,6 +36,8 @@ export class AppModule implements NestModule {
     consumer
       .apply(CLogger, fLogger)
       .exclude({ path: 'others', method: RequestMethod.GET })
-      .forRoutes({ path: 'dynamic', method: RequestMethod.ALL });
+      .forRoutes({ path: 'dynamic', method: RequestMethod.ALL })
+      .apply(HttpLogger)
+      .forRoutes('*');
   }
 }

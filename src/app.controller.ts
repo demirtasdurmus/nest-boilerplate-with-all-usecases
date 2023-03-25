@@ -9,10 +9,13 @@ import {
   ParseEnumPipe,
   ParseUUIDPipe,
   Query,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 
 import { AppService } from './app.service';
+import { AuthGuard } from './guards/auth.guard';
+import { RolesGuard } from './guards/roles.guard';
 import { joiTestSchema } from './pipes/joi-test.schema';
 import { JoiValidation } from './pipes/joi-validation.pipe';
 import { PipeUser, UserById } from './pipes/user-by-id.pipe';
@@ -27,6 +30,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
+  @UseGuards(AuthGuard, RolesGuard)
   getData() {
     return this.appService.getData();
   }

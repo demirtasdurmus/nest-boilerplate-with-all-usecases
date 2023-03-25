@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   DefaultValuePipe,
@@ -10,6 +11,7 @@ import {
   ParseUUIDPipe,
   Query,
   UseGuards,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 
@@ -17,6 +19,11 @@ import { AppService } from './app.service';
 import { Roles } from './decorators/roles.decorator';
 import { AuthGuard } from './guards/auth.guard';
 import { RolesGuard } from './guards/roles.guard';
+import { ErrorInterceptor } from './interceptors/error.interceptor';
+import { ExcludeNullInterceptor } from './interceptors/exclude-null.interceptor';
+import { LoggingInterceptor } from './interceptors/logging.interceptor';
+import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
+import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { joiTestSchema } from './pipes/joi-test.schema';
 import { JoiValidation } from './pipes/joi-validation.pipe';
 import { PipeUser, UserById } from './pipes/user-by-id.pipe';
@@ -53,6 +60,8 @@ export class AppController {
   }
 
   @Get('pipes/:id')
+  @Roles('admin')
+  @UseInterceptors(LoggingInterceptor)
   getPipes(
     @Param('id', ParseUUIDPipe) id: string,
     @Query('status', new ParseEnumPipe(STATUS, { errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) status: STATUS,
@@ -64,9 +73,34 @@ export class AppController {
     return this.appService.testParsePipe(id, status);
   }
 
-  @Get('roles')
+  @Get('roles/:id')
   @Roles('admin')
+  @UseInterceptors(TransformInterceptor)
   getRoles() {
+    console.log('Im logging inside the handler');
     return this.appService.testRoleGuard('roles');
+  }
+
+  @Get('exclude-null')
+  @UseInterceptors(ExcludeNullInterceptor)
+  testExcludeNullInterceptor() {
+    return null;
+  }
+
+  @Get('error-interceptor')
+  @UseInterceptors(ErrorInterceptor)
+  testErrorInterceptor() {
+    throw new BadRequestException('Bad request');
+  }
+
+  @Get('timeout')
+  @UseInterceptors(TimeoutInterceptor)
+  testTimeout() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('success');
+      }, 6000);
+    });
   }
 }

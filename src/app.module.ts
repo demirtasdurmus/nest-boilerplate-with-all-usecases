@@ -1,10 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod, ValidationPipe } from '@nestjs/common';
-import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongoException } from './filters/mongodb-exception.filter';
 import { RolesGuard } from './guards/roles.guard';
+import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { DynamicTestModule } from './lib/dynamic/dynamic-test.module';
 import { HttpLogger } from './middlewares/http-logger.middleware';
 import { CLogger, fLogger } from './middlewares/logger.middleware';
@@ -38,6 +39,10 @@ import { VehicleModule } from './vehicle/vehicle.module';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
     },
   ],
 })

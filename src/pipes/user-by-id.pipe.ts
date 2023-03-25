@@ -11,6 +11,7 @@ export class UserById implements PipeTransform<string, Promise<PipeUser>> {
   // constructor (private readonly userService: UserService) {}
 
   async transform(value: string, metadata: ArgumentMetadata): Promise<PipeUser> {
+    console.log('Im logging inside the custom pipe');
     // const user = await this.userService.getById(id);
     // if (!user) throw new UnauthorizedException();
     return { id: '', name: '' };

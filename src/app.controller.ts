@@ -42,6 +42,7 @@ export enum STATUS {
   path: '/',
   scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
 })
+@Roles('user')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 

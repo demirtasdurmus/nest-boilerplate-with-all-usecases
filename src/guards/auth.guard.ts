@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 export class AuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest<Request>();
+    console.log('Im running for and into:', context.getHandler().name, context.getClass().name);
     console.log('Passing Auth Guard', req.originalUrl);
     return true;
   }

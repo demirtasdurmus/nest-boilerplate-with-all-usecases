@@ -1,8 +1,11 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod, ValidationPipe } from '@nestjs/common';
+import { Logger, MiddlewareConsumer, Module, NestModule, RequestMethod, ValidationPipe } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseModule, MongooseModuleFactoryOptions } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { IConfig } from './config/config.interface';
+import { configValidationSchema } from './config/config.schema';
 import { MongoException } from './filters/mongodb-exception.filter';
 import { RolesGuard } from './guards/roles.guard';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
@@ -13,13 +16,29 @@ import { VehicleModule } from './vehicle/vehicle.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017', {
-      dbName: 'vehicles',
-      authSource: 'admin',
-      socketTimeoutMS: 15000,
-      connectionFactory(connection) {
-        console.log(`Connected to ${connection.name} successfully`);
-        return connection;
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
+      validationSchema: configValidationSchema,
+    }),
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory(config: ConfigService<IConfig>): MongooseModuleFactoryOptions {
+        const logger = new Logger('MONGODB-LOGGER');
+        return {
+          uri: `mongodb://${config.get('DB_HOST')}:${config.get('DB_PORT')}`,
+          socketTimeoutMS: 15000,
+          dbName: config.get('DB_NAME'),
+          authSource: config.get('DB_AUTHSOURCE'),
+          user: config.get('DB_USER'),
+          pass: config.get('DB_PASS'),
+          connectionFactory(connection: any) {
+            setTimeout(() => {
+              logger.verbose(`Connected to ${connection.name} db successfully`);
+            }, 1000);
+            return connection;
+          },
+        };
       },
     }),
     DynamicTestModule.forRoot({ name: 'first conf value', value: 2 }),

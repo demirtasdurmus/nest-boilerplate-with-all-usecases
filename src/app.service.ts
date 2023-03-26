@@ -17,7 +17,12 @@ export class AppService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
+    console.log('App service have been initialized');
     //   this.service = this.moduleRef.get(Service);
+  }
+
+  onApplicationShutdown(signal: string) {
+    console.log(signal); // e.g. "SIGINT"
   }
 
   getData(): { message: string } {

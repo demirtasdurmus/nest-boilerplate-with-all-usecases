@@ -1,10 +1,17 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { HttpException, HttpStatus, Inject, Injectable, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 import { STATUS } from './app.controller';
 import { DynamicTestService } from './lib/dynamic/dynamic-test.service';
 
-@Injectable()
+@Injectable({
+  scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
+})
 export class AppService {
-  constructor(private readonly dynamicService: DynamicTestService) {}
+  constructor(
+    private readonly dynamicService: DynamicTestService, // @Inject(REQUEST) private request: Request, // reaching the request obj in Request scoped provider
+  ) {}
 
   getData(): { message: string } {
     return { message: 'Welcome to uback!' };

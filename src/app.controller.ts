@@ -10,6 +10,7 @@ import {
   ParseEnumPipe,
   ParseUUIDPipe,
   Query,
+  Scope,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -37,7 +38,10 @@ export enum STATUS {
   PASSIVE = 'PASSIVE',
 }
 
-@Controller()
+@Controller({
+  path: '/',
+  scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
+})
 export class AppController {
   constructor(private readonly appService: AppService) {}
 

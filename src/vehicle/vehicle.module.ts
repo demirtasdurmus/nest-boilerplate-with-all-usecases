@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { forwardRef, Module } from '@nestjs/common';
 import { VehicleService } from './vehicle.service';
 import { VehicleController } from './vehicle.controller';

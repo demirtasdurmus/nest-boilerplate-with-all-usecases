@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Logger, MiddlewareConsumer, Module, NestModule, RequestMethod, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
@@ -13,28 +14,39 @@ import { DynamicTestModule } from './lib/dynamic/dynamic-test.module';
 import { HttpLogger } from './middlewares/http-logger.middleware';
 import { CLogger, fLogger } from './middlewares/logger.middleware';
 import { VehicleModule } from './vehicle/vehicle.module';
+import customConfiguration from './config/custom-configuration';
+import registerAsConfiguration from './config/register-as-configuration';
+import { validate } from './config/env.validation';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV}`,
+      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+      load: [customConfiguration, registerAsConfiguration],
+      cache: true, // improves performance
       validationSchema: configValidationSchema,
+      validationOptions: {
+        allowUnknown: true, //see https://joi.dev/api/?v=17.8.3#example for more.
+        abortEarly: true,
+      },
+      // validate: validate, // custom .env validator function
+      expandVariables: true, // to use variable axpansion
     }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory(config: ConfigService<IConfig>): MongooseModuleFactoryOptions {
         const logger = new Logger('MONGODB-LOGGER');
         return {
-          uri: `mongodb://${config.get('DB_HOST')}:${config.get('DB_PORT')}`,
+          uri: `mongodb://${config.get('DB_HOST', { infer: true })}:${config.get('DB_PORT', { infer: true })}`,
           socketTimeoutMS: 15000,
-          dbName: config.get('DB_NAME'),
-          authSource: config.get('DB_AUTHSOURCE'),
-          user: config.get('DB_USER'),
-          pass: config.get('DB_PASS'),
+          dbName: config.get('DB_NAME', { infer: true }),
+          authSource: config.get('DB_AUTHSOURCE', { infer: true }),
+          user: config.get('DB_USER', { infer: true }),
+          pass: config.get('DB_PASS', { infer: true }),
           connectionFactory(connection: any) {
             setTimeout(() => {
-              logger.verbose(`Connected to ${connection.name} db successfully`);
+              logger.log(`Connected to ${connection.name} db successfully`);
             }, 1000);
             return connection;
           },

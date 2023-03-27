@@ -17,7 +17,7 @@ export class AppService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    console.log('App service have been initialized');
+    // console.log('App service have been initialized');
     //   this.service = this.moduleRef.get(Service);
   }
 

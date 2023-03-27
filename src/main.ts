@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { LazyModuleLoader, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { IConfig } from './config/config.interface';
+import { rainbow } from '@colors/colors/safe';
 
 async function bootstrap() {
   const app = await NestFactory.create<INestApplication>(AppModule);
@@ -12,6 +15,12 @@ async function bootstrap() {
   // const lazyModuleLoader = app.get(LazyModuleLoader);
   // const moduleRef = await lazyModuleLoader.load(() => LazyModule);
 
-  await app.listen(8000);
+  const configService = app.get(ConfigService<IConfig, true>);
+
+  const port = configService.get('APP_PORT', { infer: true });
+
+  await app.listen(port, () => {
+    Logger.log(`🚀 ${rainbow(` Application is running on: http://localhost:${port}`)}`);
+  });
 }
 bootstrap();

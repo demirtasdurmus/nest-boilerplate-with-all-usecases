@@ -2,6 +2,7 @@ import Joi from 'joi';
 import { IConfig } from './config.interface';
 
 export const configValidationSchema = Joi.object<IConfig>({
+  APP_PORT: Joi.number().required().default(8000),
   DB_HOST: Joi.string().required(),
   DB_PORT: Joi.number().required(),
   DB_NAME: Joi.string().required(),

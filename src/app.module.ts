@@ -23,7 +23,7 @@ import { validate } from './config/env.validation';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
-      load: [customConfiguration, registerAsConfiguration],
+      // load: [customConfiguration, registerAsConfiguration],
       cache: true, // improves performance
       validationSchema: configValidationSchema,
       validationOptions: {
@@ -31,7 +31,7 @@ import { validate } from './config/env.validation';
         abortEarly: true,
       },
       // validate: validate, // custom .env validator function
-      expandVariables: true, // to use variable axpansion
+      expandVariables: true, // to use variable expansion
     }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],

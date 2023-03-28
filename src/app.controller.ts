@@ -6,6 +6,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseArrayPipe,
   ParseBoolPipe,
   ParseEnumPipe,
   ParseUUIDPipe,
@@ -59,7 +60,7 @@ export class AppController {
 
   @Get('exception')
   getException() {
-    return this.appService.testHttpExeption();
+    return this.appService.testHttpException();
   }
 
   @Get('pipes')
@@ -124,5 +125,10 @@ export class AppController {
   @CombinedAuth('admin')
   testCombinedAuth() {
     return 'success';
+  }
+
+  @Get('array-types')
+  parseArrayTypes(@Query('ids', new ParseArrayPipe({ items: Number, separator: ',' })) ids: number[]) {
+    return ids;
   }
 }

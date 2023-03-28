@@ -52,7 +52,7 @@ import { MongooseConnectionUtil } from './utils/mongoose-connection.util';
           connectionFactory(connection: Connection) {
             setTimeout(() => {
               logger.log(`Connected to ${connection.name} db successfully`);
-            }, 1000);
+            }, 500);
             return connection;
           },
         };
@@ -66,7 +66,7 @@ import { MongooseConnectionUtil } from './utils/mongoose-connection.util';
     AppService,
     {
       provide: APP_PIPE,
-      useValue: new ValidationPipe({ whitelist: true }),
+      useValue: new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
     },
     {
       provide: APP_FILTER,

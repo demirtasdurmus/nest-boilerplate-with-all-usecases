@@ -26,14 +26,14 @@ export class AppService implements OnModuleInit {
   }
 
   getData(): { message: string } {
-    return { message: 'Welcome to uback!' };
+    return { message: 'Welcome!' };
   }
 
   async testDynamicModule(): Promise<string> {
     return this.dynamicService.getDynamicData();
   }
 
-  async testHttpExeption() {
+  async testHttpException() {
     throw new HttpException(
       { status: HttpStatus.BAD_REQUEST, error: 'This is a custom error message' },
       HttpStatus.BAD_REQUEST,

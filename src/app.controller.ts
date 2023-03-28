@@ -21,6 +21,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { Expose } from 'class-transformer';
 
 import { AppService } from './app.service';
 import { CombinedAuth } from './decorators/combined-auth.decorator';
@@ -32,6 +33,7 @@ import { RolesGuard } from './guards/roles.guard';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { ExcludeNullInterceptor } from './interceptors/exclude-null.interceptor';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
+import { Serialize } from './interceptors/serialize.interceptor';
 import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { joiTestSchema } from './pipes/joi-test.schema';
@@ -41,6 +43,14 @@ import { PipeUser, UserById } from './pipes/user-by-id.pipe';
 export enum STATUS {
   ACTIVE = 'ACTIVE',
   PASSIVE = 'PASSIVE',
+}
+
+export class TestSerializeDto {
+  @Expose()
+  id: string;
+
+  @Expose()
+  name: string;
 }
 
 @Controller({
@@ -142,5 +152,11 @@ export class AppController {
   // @CacheTTL(10) // custom TTL for caching (in seconds
   testCache() {
     return this.appService.testCache();
+  }
+
+  @Get('serialize')
+  @Serialize(TestSerializeDto)
+  testSerialize() {
+    return this.appService.testSerializeInterceptor();
   }
 }

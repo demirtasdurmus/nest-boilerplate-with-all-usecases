@@ -65,4 +65,8 @@ export class AppService implements OnModuleInit {
 
     return value;
   }
+
+  async testSerializeInterceptor() {
+    return { id: 1, name: 'test', password: 'secret-pass-not-to-be-exposed' };
+  }
 }

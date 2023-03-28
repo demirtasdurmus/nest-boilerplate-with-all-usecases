@@ -10,7 +10,7 @@ import { configValidationSchema } from './config/config.schema';
 import { MongoException } from './filters/mongodb-exception.filter';
 import { RolesGuard } from './guards/roles.guard';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
-import { DynamicTestModule } from './lib/dynamic/dynamic-test.module';
+import { DynamicTestModule } from '@app/dynamic-test';
 import { HttpLogger } from './middlewares/http-logger.middleware';
 import { CLogger, fLogger } from './middlewares/logger.middleware';
 import { VehicleModule } from './vehicle/vehicle.module';

@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Inject, Injectable, OnModuleInit, Scope } fr
 import { ModuleRef, REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { STATUS } from './app.controller';
-import { DynamicTestService } from './lib/dynamic/dynamic-test.service';
+import { DynamicTestService } from '@app/dynamic-test';
 
 @Injectable({
   scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT

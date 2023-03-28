@@ -1,9 +1,19 @@
 {
-  "moduleFileExtensions": ["js", "json", "ts"],
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
   "rootDir": ".",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@app/dynamic-test/(.*)": "<rootDir>/../libs/dynamic-test/src/$1",
+    "@app/dynamic-test": "<rootDir>/../libs/dynamic-test/src",
+    "@app/lazy-test/(.*)": "<rootDir>/../libs/lazy-test/src/$1",
+    "@app/lazy-test": "<rootDir>/../libs/lazy-test/src"
   }
 }

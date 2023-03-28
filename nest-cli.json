@@ -3,6 +3,27 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": true
+  },
+  "projects": {
+    "dynamic-test": {
+      "type": "library",
+      "root": "libs/dynamic-test",
+      "entryFile": "index",
+      "sourceRoot": "libs/dynamic-test/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/dynamic-test/tsconfig.lib.json"
+      }
+    },
+    "lazy-test": {
+      "type": "library",
+      "root": "libs/lazy-test",
+      "entryFile": "index",
+      "sourceRoot": "libs/lazy-test/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/lazy-test/tsconfig.lib.json"
+      }
+    }
   }
 }

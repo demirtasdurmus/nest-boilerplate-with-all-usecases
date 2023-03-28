@@ -17,6 +17,20 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "@app/dynamic-test": [
+        "libs/dynamic-test/src"
+      ],
+      "@app/dynamic-test/*": [
+        "libs/dynamic-test/src/*"
+      ],
+      "@app/lazy-test": [
+        "libs/lazy-test/src"
+      ],
+      "@app/lazy-test/*": [
+        "libs/lazy-test/src/*"
+      ]
+    }
   }
 }

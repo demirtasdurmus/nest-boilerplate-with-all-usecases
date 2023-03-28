@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { HttpException, HttpStatus, Inject, Injectable, OnModuleInit, Scope } from '@nestjs/common';
+import { CACHE_MANAGER, HttpException, HttpStatus, Inject, Injectable, OnModuleInit, Scope } from '@nestjs/common';
 import { ModuleRef, REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { STATUS } from './app.controller';
 import { DynamicTestService } from '@app/dynamic-test';
+import { Cache } from 'cache-manager';
 
 @Injectable({
   scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
@@ -14,6 +15,7 @@ export class AppService implements OnModuleInit {
     // @Inject(REQUEST) private request: Request, // reaching the request obj in Request scoped provider
     // private readonly moduleRef: ModuleRef,
     private readonly dynamicService: DynamicTestService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   onModuleInit() {
@@ -51,5 +53,16 @@ export class AppService implements OnModuleInit {
 
   async testRoleGuard(data: any) {
     return data;
+  }
+
+  async testCache() {
+    const value = await this.cacheManager.get('test');
+
+    if (!value) {
+      await this.cacheManager.set('test', 'test-cache', 10000);
+      return value;
+    }
+
+    return value;
   }
 }

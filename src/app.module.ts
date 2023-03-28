@@ -1,5 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Logger, MiddlewareConsumer, Module, NestModule, RequestMethod, ValidationPipe } from '@nestjs/common';
+import {
+  CacheInterceptor,
+  CacheModule,
+  Logger,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { MongooseModule, MongooseModuleFactoryOptions } from '@nestjs/mongoose';
@@ -19,6 +28,7 @@ import registerAsConfiguration from './config/register-as-configuration';
 import { validate } from './config/env.validation';
 import { Connection } from 'mongoose';
 import { MongooseConnectionUtil } from './utils/mongoose-connection.util';
+import { CacheConfigService } from './utils/cache-connection.util';
 
 @Module({
   imports: [
@@ -58,6 +68,14 @@ import { MongooseConnectionUtil } from './utils/mongoose-connection.util';
         };
       },
     }),
+    // CacheModule.registerAsync({ // using a util class to create the connection
+    //   useClass: CacheConfigService,
+    // }),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 5, // seconds
+      max: 10, // maximum number of items in cache
+    }),
     DynamicTestModule.forRoot({ name: 'first conf value', value: 2 }),
     VehicleModule,
   ],
@@ -80,6 +98,11 @@ import { MongooseConnectionUtil } from './utils/mongoose-connection.util';
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
     },
+    //  we can bind CacheInterceptor to all endpoints globally
+    // {
+    //   provide: 'APP_INTERCEPTOR',
+    //   useClass: CacheInterceptor,
+    // },
   ],
 })
 export class AppModule implements NestModule {

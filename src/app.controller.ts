@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   BadRequestException,
   Body,
+  CacheInterceptor,
+  CacheKey,
+  CacheTTL,
   Controller,
   DefaultValuePipe,
   Get,
@@ -130,5 +134,13 @@ export class AppController {
   @Get('array-types')
   parseArrayTypes(@Query('ids', new ParseArrayPipe({ items: Number, separator: ',' })) ids: number[]) {
     return ids;
+  }
+
+  @Get('cache')
+  @UseInterceptors(CacheInterceptor) // enables automatic caching, only GET endpoints are cached by default
+  // @CacheKey('custom_key') // custom key for caching, can be used with @CacheTTL()
+  // @CacheTTL(10) // custom TTL for caching (in seconds
+  testCache() {
+    return this.appService.testCache();
   }
 }

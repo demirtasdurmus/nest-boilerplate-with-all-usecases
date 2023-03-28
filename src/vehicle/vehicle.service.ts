@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Connection, Model } from 'mongoose';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { IVehicle } from './interfaces/vehicle.interface';
@@ -8,7 +8,14 @@ import { Vehicle, VehicleDocument } from './schemas/vehicle.schema';
 
 @Injectable()
 export class VehicleService {
-  constructor(@InjectModel(Vehicle.name) private readonly vehicleModel: Model<VehicleDocument>) {}
+  constructor(
+    @InjectConnection() private readonly connection: Connection, // this is to make native queries to the db
+    @InjectModel(Vehicle.name) private readonly vehicleModel: Model<VehicleDocument>,
+  ) {}
+
+  async testNativeQuery(): Promise<any> {
+    return this.connection.db.collection('vehicles').find({}).toArray();
+  }
 
   async create(createVehicleDto: CreateVehicleDto): Promise<IVehicle> {
     return this.vehicleModel.create(createVehicleDto);

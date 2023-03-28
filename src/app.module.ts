@@ -17,6 +17,8 @@ import { VehicleModule } from './vehicle/vehicle.module';
 import customConfiguration from './config/custom-configuration';
 import registerAsConfiguration from './config/register-as-configuration';
 import { validate } from './config/env.validation';
+import { Connection } from 'mongoose';
+import { MongooseConnectionUtil } from './utils/mongoose-connection.util';
 
 @Module({
   imports: [
@@ -33,6 +35,9 @@ import { validate } from './config/env.validation';
       // validate: validate, // custom .env validator function
       expandVariables: true, // to use variable expansion
     }),
+    // MongooseModule.forRootAsync({  // using a util class to create the connection
+    //   useClass: MongooseConnectionUtil,
+    // }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory(config: ConfigService<IConfig>): MongooseModuleFactoryOptions {
@@ -44,7 +49,7 @@ import { validate } from './config/env.validation';
           authSource: config.get('DB_AUTHSOURCE', { infer: true }),
           user: config.get('DB_USER', { infer: true }),
           pass: config.get('DB_PASS', { infer: true }),
-          connectionFactory(connection: any) {
+          connectionFactory(connection: Connection) {
             setTimeout(() => {
               logger.log(`Connected to ${connection.name} db successfully`);
             }, 1000);

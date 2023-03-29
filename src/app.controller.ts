@@ -169,4 +169,9 @@ export class AppController {
   manageCron() {
     return this.appService.manageCron();
   }
+
+  @Get('queue')
+  manageQueue() {
+    return this.appService.testQueue();
+  }
 }

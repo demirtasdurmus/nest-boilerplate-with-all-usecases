@@ -16,6 +16,7 @@ import { DynamicTestService } from '@app/dynamic-test';
 import { Cache } from 'cache-manager';
 import { Cron, CronExpression, Interval, SchedulerRegistry, Timeout } from '@nestjs/schedule';
 import { CronJob } from 'cron';
+import { TestAudioProducer } from './queues/producers/test-audio.producer';
 
 @Injectable({
   scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
@@ -29,6 +30,7 @@ export class AppService implements OnModuleInit {
     private readonly dynamicService: DynamicTestService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly scheduleRegistry: SchedulerRegistry,
+    private readonly audioService: TestAudioProducer,
   ) {}
 
   onModuleInit() {
@@ -85,7 +87,7 @@ export class AppService implements OnModuleInit {
 
   // @Cron('45 * * * * *')
   // @Cron(CronExpression.EVERY_10_SECONDS)
-  @Cron(new Date(Date.now() + 10000), { name: 'test-cron', timeZone: 'Europe/Paris' })
+  // @Cron(new Date(Date.now() + 10000), { name: 'test-cron', timeZone: 'Europe/Paris' })
   // @Interval('test', 10000)
   // @Timeout('test', 5000)
   handleCron() {
@@ -105,5 +107,10 @@ export class AppService implements OnModuleInit {
     // this.scheduleRegistry.deleteCronJob('test-cron');
 
     return this.scheduleRegistry.getCronJobs();
+  }
+
+  /* Producers*/
+  async testQueue() {
+    return this.audioService.addAudioJob({ foo: 'bar' });
   }
 }

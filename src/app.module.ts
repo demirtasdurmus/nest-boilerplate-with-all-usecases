@@ -30,9 +30,14 @@ import { Connection } from 'mongoose';
 import { MongooseConnectionUtil } from './utils/mongoose-connection.util';
 import { CacheConfigService } from './utils/cache-connection.util';
 import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bull';
+import { TestAudioProducer } from './queues/producers/test-audio.producer';
+import { TestAudioConsumer } from './queues/consumers/test-audio.consumer';
 
 @Module({
   imports: [
+    /*CONFIG Module Configuration*/
+
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
@@ -46,6 +51,9 @@ import { ScheduleModule } from '@nestjs/schedule';
       // validate: validate, // custom .env validator function
       expandVariables: true, // to use variable expansion
     }),
+
+    /*MONGODB Module Configuration*/
+
     // MongooseModule.forRootAsync({  // using a util class to create the connection
     //   useClass: MongooseConnectionUtil,
     // }),
@@ -69,6 +77,9 @@ import { ScheduleModule } from '@nestjs/schedule';
         };
       },
     }),
+
+    /*CACHE Module Configuration*/
+
     // CacheModule.registerAsync({ // using a util class to create the connection
     //   useClass: CacheConfigService,
     // }),
@@ -77,6 +88,26 @@ import { ScheduleModule } from '@nestjs/schedule';
       ttl: 5, // seconds
       max: 10, // maximum number of items in cache
     }),
+
+    /*QUEUE Module Configuration*/
+    // BullModule.forRoot({
+    //   redis: {
+    //     host: 'localhost',
+    //     port: 6379,
+    //   },
+    // }),
+    BullModule.forRootAsync({
+      useFactory: () => ({
+        redis: {
+          host: 'localhost',
+          port: 6379,
+        },
+      }),
+    }),
+    BullModule.registerQueue({
+      name: 'test-queue',
+    }),
+
     ScheduleModule.forRoot(),
     DynamicTestModule.forRoot({ name: 'first conf value', value: 2 }),
     VehicleModule,
@@ -84,6 +115,8 @@ import { ScheduleModule } from '@nestjs/schedule';
   controllers: [AppController],
   providers: [
     AppService,
+    TestAudioProducer,
+    TestAudioConsumer,
     {
       provide: APP_PIPE,
       useValue: new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),

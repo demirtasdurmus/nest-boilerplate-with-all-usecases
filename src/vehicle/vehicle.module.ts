@@ -10,21 +10,28 @@ import { IConfig } from 'src/config/config.interface';
 @Module({
   imports: [
     // forwardRef(()=> CircularDependentModule), // solving issues with circular dependency
-    // MongooseModule.forFeatureAsync([  // this is the solution to the pre save hook issue
-    //   {
-    //     name: Vehicle.name,
-    //     useFactory: (config: ConfigService<IConfig>) => {
-    //       const schema = VehicleSchema;
-    //       schema.pre('save', function (next) {
-    //         console.log('pre save hook', config.get('DB_NAME', { infer: true }));
-    //         next();
-    //       });
-    //       return schema;
-    //     },
-    //     inject: [ConfigService],
-    //   },
-    // ]),
-    MongooseModule.forFeature([{ name: Vehicle.name, schema: VehicleSchema }]),
+
+    /*this is the solution to the pre save hook issue */
+    MongooseModule.forFeatureAsync([
+      {
+        name: Vehicle.name,
+        useFactory: () => {
+          const schema = VehicleSchema;
+          schema.pre('save', function (next) {
+            console.log('pre save hook');
+            next();
+          });
+          schema.pre(/^find/, function (next) {
+            this.find({ active: { $ne: false } });
+            next();
+          });
+          return schema;
+        },
+      },
+    ]),
+
+    /* Standard*/
+    // MongooseModule.forFeature([{ name: Vehicle.name, schema: VehicleSchema }]),
   ],
   controllers: [VehicleController],
   providers: [VehicleService],

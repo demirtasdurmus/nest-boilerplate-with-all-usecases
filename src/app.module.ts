@@ -29,6 +29,7 @@ import { validate } from './config/env.validation';
 import { Connection } from 'mongoose';
 import { MongooseConnectionUtil } from './utils/mongoose-connection.util';
 import { CacheConfigService } from './utils/cache-connection.util';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { CacheConfigService } from './utils/cache-connection.util';
       ttl: 5, // seconds
       max: 10, // maximum number of items in cache
     }),
+    ScheduleModule.forRoot(),
     DynamicTestModule.forRoot({ name: 'first conf value', value: 2 }),
     VehicleModule,
   ],

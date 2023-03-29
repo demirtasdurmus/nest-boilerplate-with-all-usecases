@@ -1,21 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { CACHE_MANAGER, HttpException, HttpStatus, Inject, Injectable, OnModuleInit, Scope } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Logger,
+  OnModuleInit,
+  Scope,
+} from '@nestjs/common';
 import { ModuleRef, REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { STATUS } from './app.controller';
 import { DynamicTestService } from '@app/dynamic-test';
 import { Cache } from 'cache-manager';
+import { Cron, CronExpression, Interval, SchedulerRegistry, Timeout } from '@nestjs/schedule';
+import { CronJob } from 'cron';
 
 @Injectable({
   scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
 })
 export class AppService implements OnModuleInit {
+  private readonly logger = new Logger(AppService.name);
   // private service: Service;
   constructor(
     // @Inject(REQUEST) private request: Request, // reaching the request obj in Request scoped provider
     // private readonly moduleRef: ModuleRef,
     private readonly dynamicService: DynamicTestService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    private readonly scheduleRegistry: SchedulerRegistry,
   ) {}
 
   onModuleInit() {
@@ -68,5 +81,29 @@ export class AppService implements OnModuleInit {
 
   async testSerializeInterceptor() {
     return { id: 1, name: 'test', password: 'secret-pass-not-to-be-exposed' };
+  }
+
+  // @Cron('45 * * * * *')
+  // @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(new Date(Date.now() + 10000), { name: 'test-cron', timeZone: 'Europe/Paris' })
+  // @Interval('test', 10000)
+  // @Timeout('test', 5000)
+  handleCron() {
+    console.log('Cron job is running');
+  }
+
+  async manageCron() {
+    // const job = this.scheduleRegistry.getCronJob('test-cron');
+    // console.log(job.lastDate());
+    // job.stop();
+
+    // this.scheduleRegistry.addCronJob(
+    //   'test-cron-1',
+    //   new CronJob('45 * * * * *', () => console.log('Cron job is running')),
+    // );
+
+    // this.scheduleRegistry.deleteCronJob('test-cron');
+
+    return this.scheduleRegistry.getCronJobs();
   }
 }

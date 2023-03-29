@@ -164,4 +164,9 @@ export class AppController {
   testSerialize() {
     return this.appService.testSerializeInterceptor();
   }
+
+  @Get('cron')
+  manageCron() {
+    return this.appService.manageCron();
+  }
 }

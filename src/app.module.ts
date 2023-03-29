@@ -91,6 +91,7 @@ import { TestScheduleJob } from './jobs/test-schedule.job';
     }),
 
     /*QUEUE Module Configuration*/
+
     // BullModule.forRoot({
     //   redis: {
     //     host: 'localhost',

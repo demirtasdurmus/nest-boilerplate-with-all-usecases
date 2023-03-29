@@ -20,6 +20,8 @@ import {
   UseInterceptors,
   UsePipes,
   ValidationPipe,
+  Version,
+  VERSION_NEUTRAL,
 } from '@nestjs/common';
 import { Expose } from 'class-transformer';
 
@@ -56,12 +58,15 @@ export class TestSerializeDto {
 @Controller({
   path: '/',
   scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
+  // version: '1',
+  // version: VERSION_NEUTRAL // doesn't care about version
 })
 @Roles('user')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
+  // @Version('1')
   @UseGuards(AuthGuard, RolesGuard)
   getData() {
     return this.appService.getData();

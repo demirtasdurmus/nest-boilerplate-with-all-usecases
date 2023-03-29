@@ -110,7 +110,7 @@ export class AppModule implements NestModule {
     consumer
       .apply(CLogger, fLogger)
       .exclude({ path: 'others', method: RequestMethod.GET })
-      .forRoutes({ path: 'dynamic', method: RequestMethod.ALL })
+      .forRoutes({ path: 'dynamic', method: RequestMethod.ALL, version: '2' })
       .apply(HttpLogger)
       .forRoutes('*');
   }

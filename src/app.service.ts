@@ -17,6 +17,7 @@ import { Cache } from 'cache-manager';
 import { Cron, CronExpression, Interval, SchedulerRegistry, Timeout } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { TestAudioProducer } from './queues/producers/test-audio.producer';
+import { TestScheduleJob } from './jobs/test-schedule.job';
 
 @Injectable({
   scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
@@ -27,9 +28,10 @@ export class AppService implements OnModuleInit {
   constructor(
     // @Inject(REQUEST) private request: Request, // reaching the request obj in Request scoped provider
     // private readonly moduleRef: ModuleRef,
-    private readonly dynamicService: DynamicTestService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
-    private readonly scheduleRegistry: SchedulerRegistry,
+    /* External Providers/Services*/
+    private readonly dynamicService: DynamicTestService,
+    private readonly jobService: TestScheduleJob,
     private readonly audioService: TestAudioProducer,
   ) {}
 
@@ -85,31 +87,14 @@ export class AppService implements OnModuleInit {
     return { id: 1, name: 'test', password: 'secret-pass-not-to-be-exposed' };
   }
 
-  // @Cron('45 * * * * *')
-  // @Cron(CronExpression.EVERY_10_SECONDS)
-  // @Cron(new Date(Date.now() + 10000), { name: 'test-cron', timeZone: 'Europe/Paris' })
-  // @Interval('test', 10000)
-  // @Timeout('test', 5000)
-  handleCron() {
-    console.log('Cron job is running');
+  async handleCron() {
+    return this.jobService.handleCron();
   }
 
   async manageCron() {
-    // const job = this.scheduleRegistry.getCronJob('test-cron');
-    // console.log(job.lastDate());
-    // job.stop();
-
-    // this.scheduleRegistry.addCronJob(
-    //   'test-cron-1',
-    //   new CronJob('45 * * * * *', () => console.log('Cron job is running')),
-    // );
-
-    // this.scheduleRegistry.deleteCronJob('test-cron');
-
-    return this.scheduleRegistry.getCronJobs();
+    return this.jobService.manageCron();
   }
 
-  /* Producers*/
   async testQueue() {
     return this.audioService.addAudioJob({ foo: 'bar' });
   }

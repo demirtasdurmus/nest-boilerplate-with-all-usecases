@@ -33,6 +33,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { BullModule } from '@nestjs/bull';
 import { TestAudioProducer } from './queues/producers/test-audio.producer';
 import { TestAudioConsumer } from './queues/consumers/test-audio.consumer';
+import { TestScheduleJob } from './jobs/test-schedule.job';
 
 @Module({
   imports: [
@@ -115,8 +116,14 @@ import { TestAudioConsumer } from './queues/consumers/test-audio.consumer';
   controllers: [AppController],
   providers: [
     AppService,
+    /* Consumer and Producer providers */
     TestAudioProducer,
     TestAudioConsumer,
+
+    /* Schedule providers */
+    TestScheduleJob,
+
+    /*Global Pipes*/
     {
       provide: APP_PIPE,
       useValue: new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),

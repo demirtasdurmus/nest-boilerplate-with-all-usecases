@@ -9,6 +9,7 @@ import {
   DefaultValuePipe,
   FileTypeValidator,
   Get,
+  Header,
   HttpStatus,
   MaxFileSizeValidator,
   Param,
@@ -22,6 +23,7 @@ import {
   Req,
   Res,
   Scope,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -52,6 +54,8 @@ import { Request, Response } from 'express';
 import { Cookies } from './decorators/cookies.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CustomFileValidator } from './validators/custom-file.validator';
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
 export enum STATUS {
   ACTIVE = 'ACTIVE',
@@ -222,5 +226,17 @@ export class AppController {
     file: Express.Multer.File,
   ) {
     return file.buffer.toString('hex');
+  }
+
+  @Get('stream')
+  // @Header('Content-Type', 'application/json')
+  // @Header('Content-Disposition', 'attachment; filename="package.json"')
+  getStreamFile(@Res({ passthrough: true }) res: Response): StreamableFile {
+    const file = createReadStream(join(process.cwd(), 'package.json'));
+    // res.set({
+    //   'Content-Type': 'application/json',
+    //   'Content-Disposition': 'attachment; filename="package.json"',
+    // });
+    return new StreamableFile(file);
   }
 }

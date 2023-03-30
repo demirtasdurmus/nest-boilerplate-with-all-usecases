@@ -35,6 +35,7 @@ import { TestAudioProducer } from './queues/producers/test-audio.producer';
 import { TestAudioConsumer } from './queues/consumers/test-audio.consumer';
 import { TestScheduleJob } from './jobs/test-schedule.job';
 import { LoggerModule, LoggerService } from '@app/logger';
+import cookieParser from 'cookie-parser';
 
 @Module({
   imports: [
@@ -153,7 +154,7 @@ export class AppModule implements NestModule {
       .apply(CLogger, fLogger)
       .exclude({ path: 'others', method: RequestMethod.GET })
       .forRoutes({ path: 'dynamic', method: RequestMethod.ALL, version: '2' })
-      .apply(HttpLogger)
+      .apply(HttpLogger, cookieParser('secret', {}))
       .forRoutes('*');
   }
 }

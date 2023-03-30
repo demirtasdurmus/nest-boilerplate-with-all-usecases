@@ -15,6 +15,8 @@ import {
   ParseEnumPipe,
   ParseUUIDPipe,
   Query,
+  Req,
+  Res,
   Scope,
   UseGuards,
   UseInterceptors,
@@ -41,6 +43,8 @@ import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { joiTestSchema } from './pipes/joi-test.schema';
 import { JoiValidation } from './pipes/joi-validation.pipe';
 import { PipeUser, UserById } from './pipes/user-by-id.pipe';
+import { Request, Response } from 'express';
+import { Cookies } from './decorators/cookies.decorator';
 
 export enum STATUS {
   ACTIVE = 'ACTIVE',
@@ -173,5 +177,16 @@ export class AppController {
   @Get('queue')
   manageQueue() {
     return this.appService.testQueue();
+  }
+
+  @Get('get-cookies')
+  getCookies(@Req() request: Request, @Cookies('key') cookie: string) {
+    console.log('decorator cookie: ', cookie);
+    return request.cookies['key'] || request.signedCookies['key'];
+  }
+
+  @Get('set-cookies')
+  setCookies(@Res({ passthrough: true }) response: Response) {
+    response.cookie('key', 'value', { signed: true });
   }
 }

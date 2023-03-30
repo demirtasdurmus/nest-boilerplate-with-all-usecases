@@ -189,4 +189,9 @@ export class AppController {
   setCookies(@Res({ passthrough: true }) response: Response) {
     response.cookie('key', 'value', { signed: true });
   }
+
+  @Get('events')
+  testEventEmitter() {
+    return this.appService.testEventEmitter();
+  }
 }

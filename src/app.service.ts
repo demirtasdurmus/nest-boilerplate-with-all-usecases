@@ -18,6 +18,8 @@ import { Cron, CronExpression, Interval, SchedulerRegistry, Timeout } from '@nes
 import { CronJob } from 'cron';
 import { TestAudioProducer } from './queues/producers/test-audio.producer';
 import { TestScheduleJob } from './jobs/test-schedule.job';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { OrderCreatedEvent } from './events/dispatchers/order-created.event';
 
 @Injectable({
   scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
@@ -29,6 +31,7 @@ export class AppService implements OnModuleInit {
     // @Inject(REQUEST) private request: Request, // reaching the request obj in Request scoped provider
     // private readonly moduleRef: ModuleRef,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    private readonly eventEmitter: EventEmitter2,
     /* External Providers/Services*/
     private readonly dynamicService: DynamicTestService,
     private readonly jobService: TestScheduleJob,
@@ -97,5 +100,10 @@ export class AppService implements OnModuleInit {
 
   async testQueue() {
     return this.audioService.addAudioJob({ foo: 'bar' });
+  }
+
+  async testEventEmitter() {
+    this.eventEmitter.emit('order.created', new OrderCreatedEvent({ foo: 'bar' }));
+    return true;
   }
 }

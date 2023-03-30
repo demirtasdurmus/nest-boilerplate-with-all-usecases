@@ -20,6 +20,9 @@ import { TestAudioProducer } from './queues/producers/test-audio.producer';
 import { TestScheduleJob } from './jobs/test-schedule.job';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { OrderCreatedEvent } from './events/dispatchers/order-created.event';
+import { HttpService } from '@nestjs/axios';
+import { catchError, firstValueFrom, map } from 'rxjs';
+import { AxiosError } from 'axios';
 
 @Injectable({
   scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
@@ -32,6 +35,7 @@ export class AppService implements OnModuleInit {
     // private readonly moduleRef: ModuleRef,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly eventEmitter: EventEmitter2,
+    private readonly httpService: HttpService,
     /* External Providers/Services*/
     private readonly dynamicService: DynamicTestService,
     private readonly jobService: TestScheduleJob,
@@ -105,5 +109,19 @@ export class AppService implements OnModuleInit {
   async testEventEmitter() {
     this.eventEmitter.emit('order.created', new OrderCreatedEvent({ foo: 'bar' }));
     return true;
+  }
+
+  async testHTTPService() {
+    // const result = await this.httpService.axiosRef.get('https://jsonplaceholder.typicode.com/todos/1');
+    // return result.data;
+    // return this.httpService.get('https://jsonplaceholder.typicode.com/todos/1').pipe(map((res) => res.data));
+    const { data } = await firstValueFrom(
+      this.httpService.get<object>('https://jsonplaceholder.typicode.com/todos/1').pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    return data;
   }
 }

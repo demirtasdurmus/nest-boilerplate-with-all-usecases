@@ -42,6 +42,7 @@ import { TestAudioConsumer } from './queues/consumers/test-audio.consumer';
 import { TestScheduleJob } from './jobs/test-schedule.job';
 import { OrderCreatedListener } from './events/listeners/order-created.listener';
 import { MulterModule } from '@nestjs/platform-express';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -146,7 +147,21 @@ import { MulterModule } from '@nestjs/platform-express';
       }),
     }),
 
+    /* Dynamic Module Configuration */
     DynamicTestModule.forRoot({ name: 'first conf value', value: 2 }),
+
+    /* HTTP Module*/
+    // HttpModule.register({
+    //   timeout: 5000,
+    //   maxRedirects: 5,
+    // }),
+    HttpModule.registerAsync({
+      useFactory: () => ({
+        timeout: 5000,
+        maxRedirects: 5,
+      }),
+    }),
+
     VehicleModule,
   ],
   controllers: [AppController],

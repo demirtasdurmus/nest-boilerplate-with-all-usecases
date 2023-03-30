@@ -239,4 +239,9 @@ export class AppController {
     // });
     return new StreamableFile(file);
   }
+
+  @Get('http')
+  testHttpService() {
+    return this.appService.testHTTPService();
+  }
 }

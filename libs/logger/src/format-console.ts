@@ -8,13 +8,13 @@ export function formatConsole(appName: string): Logform.Format {
     const color = setColor(level);
 
     const fApp = `${color(`[ ${appName.toUpperCase()} ]`)}`;
-    const fLevel = `${color(level.charAt(0).toUpperCase() + level.slice(1))}`;
-    const fTime = `${timestamp ? grey(new Date(timestamp).toLocaleString()) : ''}`;
-    const fContext = `${context ? magenta('[' + context + ']') : ''}`;
-    const fMessage = `${color(message.trimEnd())}`;
+    const fLevel = `${cyan(':') + color(level.charAt(0).toUpperCase() + level.slice(1))}`;
+    const fTime = `${timestamp ? cyan('- ') + '[ ' + grey(new Date(timestamp).toLocaleString()) + ' ]' : ''}`;
+    const fContext = `${context ? cyan('- ') + magenta('[ ' + context + ' ]') : ''}`;
+    const fMessage = `${cyan('- ') + color(message.trimEnd())}`;
     const fTrace = `${trace ? '\n' + trace : ''}`;
 
-    return `${fApp} ${fLevel} ${fTime} ${fContext} ${fMessage} ${fTrace}`;
+    return `${fApp}${fLevel} ${fTime} ${fContext} ${fMessage} ${fTrace}`;
   });
 }
 

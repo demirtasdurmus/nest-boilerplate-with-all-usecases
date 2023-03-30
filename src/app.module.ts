@@ -12,6 +12,16 @@ import {
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { MongooseModule, MongooseModuleFactoryOptions } from '@nestjs/mongoose';
+import { Connection } from 'mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bull';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import cookieParser from 'cookie-parser';
+import compression from 'compression';
+
+import { LoggerModule, LoggerService } from '@app/logger';
+import { DynamicTestModule } from '@app/dynamic-test';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { IConfig } from './config/config.interface';
@@ -19,24 +29,17 @@ import { configValidationSchema } from './config/config.schema';
 import { MongoException } from './filters/mongodb-exception.filter';
 import { RolesGuard } from './guards/roles.guard';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
-import { DynamicTestModule } from '@app/dynamic-test';
 import { HttpLogger } from './middlewares/http-logger.middleware';
 import { CLogger, fLogger } from './middlewares/logger.middleware';
 import { VehicleModule } from './vehicle/vehicle.module';
 import customConfiguration from './config/custom-configuration';
 import registerAsConfiguration from './config/register-as-configuration';
 import { validate } from './config/env.validation';
-import { Connection } from 'mongoose';
 import { MongooseConnectionUtil } from './utils/mongoose-connection.util';
 import { CacheConfigService } from './utils/cache-connection.util';
-import { ScheduleModule } from '@nestjs/schedule';
-import { BullModule } from '@nestjs/bull';
 import { TestAudioProducer } from './queues/producers/test-audio.producer';
 import { TestAudioConsumer } from './queues/consumers/test-audio.consumer';
 import { TestScheduleJob } from './jobs/test-schedule.job';
-import { LoggerModule, LoggerService } from '@app/logger';
-import cookieParser from 'cookie-parser';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { OrderCreatedListener } from './events/listeners/order-created.listener';
 
 @Module({
@@ -181,7 +184,16 @@ export class AppModule implements NestModule {
       .apply(CLogger, fLogger)
       .exclude({ path: 'others', method: RequestMethod.GET })
       .forRoutes({ path: 'dynamic', method: RequestMethod.ALL, version: '2' })
-      .apply(HttpLogger, cookieParser('secret', {}))
+      .apply(
+        HttpLogger, // Custom Http Logger Middleware
+        cookieParser('secret', {}), // Cookie Parser Middleware
+        /*
+        For high-traffic websites in production, it is strongly recommended to offload 
+        compression from the application server - typically in a reverse proxy (e.g., Nginx). 
+        In that case, you should not use compression middleware.
+        */
+        compression(), // Compression Middleware
+      )
       .forRoutes('*');
   }
 }

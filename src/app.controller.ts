@@ -23,6 +23,7 @@ import {
   Req,
   Res,
   Scope,
+  Sse,
   StreamableFile,
   UploadedFile,
   UseGuards,
@@ -31,6 +32,7 @@ import {
   ValidationPipe,
   Version,
   VERSION_NEUTRAL,
+  MessageEvent,
 } from '@nestjs/common';
 import { Expose } from 'class-transformer';
 
@@ -56,6 +58,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CustomFileValidator } from './validators/custom-file.validator';
 import { createReadStream } from 'fs';
 import { join } from 'path';
+import { interval, map, Observable } from 'rxjs';
 
 export enum STATUS {
   ACTIVE = 'ACTIVE',
@@ -244,4 +247,15 @@ export class AppController {
   testHttpService() {
     return this.appService.testHTTPService();
   }
+
+  @Sse('sse')
+  sse(): Observable<MessageEvent> {
+    return interval(1000).pipe(map((_) => ({ data: { hello: 'world' } })));
+  }
 }
+
+/* Client side conf for subscribing sse*/
+// const eventSource = new EventSource('/sse');
+// eventSource.onmessage = ({ data }) => {
+//   console.log('New message', JSON.parse(data));
+// };

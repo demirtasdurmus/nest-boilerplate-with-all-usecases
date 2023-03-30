@@ -28,6 +28,7 @@
     "@nestjs/mongoose": "^9.2.2",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/schedule": "^2.2.0",
+    "app-root-path": "^3.1.0",
     "bull": "^4.10.4",
     "cache-manager": "^5.2.0",
     "class-transformer": "^0.5.1",
@@ -36,8 +37,10 @@
     "joi": "^17.9.1",
     "mongodb": "^5.1.0",
     "mongoose": "^7.0.2",
+    "nest-winston": "^1.9.1",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -85,7 +88,8 @@
     ],
     "moduleNameMapper": {
       "^@app/dynamic-test(|/.*)$": "<rootDir>/libs/dynamic-test/src/$1",
-      "^@app/lazy-test(|/.*)$": "<rootDir>/libs/lazy-test/src/$1"
+      "^@app/lazy-test(|/.*)$": "<rootDir>/libs/lazy-test/src/$1",
+      "^@app/logger(|/.*)$": "<rootDir>/libs/logger/src/$1"
     }
   }
 }

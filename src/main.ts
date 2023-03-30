@@ -7,6 +7,7 @@ import { IConfig } from './config/config.interface';
 import { rainbow } from '@colors/colors/safe';
 import { API_PREFIX } from './constants/api-prefix.constant';
 import { CustomLogger } from './logger/custom.logger';
+import { LoggerService } from '@app/logger';
 
 async function bootstrap() {
   const app = await NestFactory.create<INestApplication>(AppModule, {
@@ -14,7 +15,12 @@ async function bootstrap() {
     // logger: ['error', 'warn'],
     // logger: console, // use the built-in global JavaScript console object
     // logger: new CustomLogger(), // use a custom logger
+    bufferLogs: true,
   });
+
+  /* Set Custom logger as app logger */
+  app.useLogger(new LoggerService().createWinstonLogger('VEHICLES'));
+
   // process.env.NO_COLOR = 'true';  //To disable color in the default logger's messages
 
   app.setGlobalPrefix(API_PREFIX);

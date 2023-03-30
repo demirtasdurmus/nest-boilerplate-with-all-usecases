@@ -34,6 +34,7 @@ import { BullModule } from '@nestjs/bull';
 import { TestAudioProducer } from './queues/producers/test-audio.producer';
 import { TestAudioConsumer } from './queues/consumers/test-audio.consumer';
 import { TestScheduleJob } from './jobs/test-schedule.job';
+import { LoggerModule, LoggerService } from '@app/logger';
 
 @Module({
   imports: [
@@ -70,9 +71,7 @@ import { TestScheduleJob } from './jobs/test-schedule.job';
           user: config.get('DB_USER', { infer: true }),
           pass: config.get('DB_PASS', { infer: true }),
           connectionFactory(connection: Connection) {
-            setTimeout(() => {
-              logger.log(`Connected to ${connection.name} db successfully`);
-            }, 500);
+            logger.log(`Connected to ${connection.name} db successfully`);
             return connection;
           },
         };

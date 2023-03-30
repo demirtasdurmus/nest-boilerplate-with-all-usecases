@@ -30,6 +30,12 @@
       ],
       "@app/lazy-test/*": [
         "libs/lazy-test/src/*"
+      ],
+      "@app/logger": [
+        "libs/logger/src"
+      ],
+      "@app/logger/*": [
+        "libs/logger/src/*"
       ]
     }
   }

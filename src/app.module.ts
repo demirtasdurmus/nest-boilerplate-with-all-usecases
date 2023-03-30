@@ -41,6 +41,7 @@ import { TestAudioProducer } from './queues/producers/test-audio.producer';
 import { TestAudioConsumer } from './queues/consumers/test-audio.consumer';
 import { TestScheduleJob } from './jobs/test-schedule.job';
 import { OrderCreatedListener } from './events/listeners/order-created.listener';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -136,6 +137,13 @@ import { OrderCreatedListener } from './events/listeners/order-created.listener'
       verboseMemoryLeak: false,
       // disable throwing uncaughtException if an error event is emitted and it has no listeners
       ignoreErrors: false,
+    }),
+
+    /* File Upload Module */
+    MulterModule.registerAsync({
+      useFactory: () => ({
+        // dest: './upload',
+      }),
     }),
 
     DynamicTestModule.forRoot({ name: 'first conf value', value: 2 }),

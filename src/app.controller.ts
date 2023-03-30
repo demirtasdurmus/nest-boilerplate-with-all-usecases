@@ -7,17 +7,22 @@ import {
   CacheTTL,
   Controller,
   DefaultValuePipe,
+  FileTypeValidator,
   Get,
   HttpStatus,
+  MaxFileSizeValidator,
   Param,
   ParseArrayPipe,
   ParseBoolPipe,
   ParseEnumPipe,
+  ParseFilePipe,
   ParseUUIDPipe,
+  Post,
   Query,
   Req,
   Res,
   Scope,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -45,6 +50,8 @@ import { JoiValidation } from './pipes/joi-validation.pipe';
 import { PipeUser, UserById } from './pipes/user-by-id.pipe';
 import { Request, Response } from 'express';
 import { Cookies } from './decorators/cookies.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CustomFileValidator } from './validators/custom-file.validator';
 
 export enum STATUS {
   ACTIVE = 'ACTIVE',
@@ -193,5 +200,27 @@ export class AppController {
   @Get('events')
   testEventEmitter() {
     return this.appService.testEventEmitter();
+  }
+
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      // dest: 'uploads' // saves the file to the uploads folder
+    }),
+  )
+  uploadFile(
+    @UploadedFile(
+      new ParseFilePipe({
+        // fileIsRequired: false,
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1000000 }), // in bytes
+          new FileTypeValidator({ fileType: 'image/jpeg' }),
+          new CustomFileValidator({ key: 'value' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    return file.buffer.toString('hex');
   }
 }

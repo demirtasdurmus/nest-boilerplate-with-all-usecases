@@ -24,25 +24,27 @@ import { DynamicTestModule } from '@app/dynamic-test';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { IConfig } from './config/config.interface';
-import { configValidationSchema } from './config/config.schema';
-import { MongoException } from './filters/mongodb-exception.filter';
-import { RolesGuard } from './guards/roles.guard';
-import { TransformInterceptor } from './interceptors/transform.interceptor';
-import { HttpLogger } from './middlewares/http-logger.middleware';
-import { CLogger, fLogger } from './middlewares/logger.middleware';
-import { VehicleModule } from './vehicle/vehicle.module';
-import customConfiguration from './config/custom-configuration';
-import registerAsConfiguration from './config/register-as-configuration';
-import { validate } from './config/env.validation';
-import { MongooseConnectionUtil } from './utils/mongoose-connection.util';
-import { CacheConfigService } from './utils/cache-connection.util';
-import { TestAudioProducer } from './queues/producers/test-audio.producer';
-import { TestAudioConsumer } from './queues/consumers/test-audio.consumer';
-import { TestScheduleJob } from './jobs/test-schedule.job';
-import { OrderCreatedListener } from './events/listeners/order-created.listener';
+import { IConfig } from '../config/config.interface';
+import { configValidationSchema } from '../config/config.schema';
+import { MongoException } from '../filters/mongodb-exception.filter';
+import { RolesGuard } from '../guards/roles.guard';
+import { TransformInterceptor } from '../interceptors/transform.interceptor';
+import { HttpLogger } from '../middlewares/http-logger.middleware';
+import { CLogger, fLogger } from '../middlewares/logger.middleware';
+import { VehicleModule } from '../api/vehicle/vehicle.module';
+import customConfiguration from '../config/custom-configuration';
+import registerAsConfiguration from '../config/register-as-configuration';
+import { validate } from '../config/env.validation';
+import { MongooseConnectionUtil } from '../utils/mongoose-connection.util';
+import { CacheConfigService } from '../utils/cache-connection.util';
+import { TestAudioProducer } from '../queues/producers/test-audio.producer';
+import { TestAudioConsumer } from '../queues/consumers/test-audio.consumer';
+import { TestScheduleJob } from '../jobs/test-schedule.job';
+import { OrderCreatedListener } from '../events/listeners/order-created.listener';
 import { MulterModule } from '@nestjs/platform-express';
 import { HttpModule } from '@nestjs/axios';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -163,6 +165,10 @@ import { HttpModule } from '@nestjs/axios';
     }),
 
     VehicleModule,
+
+    UserModule,
+
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

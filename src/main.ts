@@ -2,7 +2,7 @@
 import { INestApplication, Logger, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LazyModuleLoader, NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './api/app.module';
 import { IConfig } from './config/config.interface';
 import { rainbow } from '@colors/colors/safe';
 import { API_PREFIX } from './constants/api-prefix.constant';

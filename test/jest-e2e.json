@@ -16,6 +16,8 @@
     "@app/lazy-test/(.*)": "<rootDir>/../libs/lazy-test/src/$1",
     "@app/lazy-test": "<rootDir>/../libs/lazy-test/src",
     "@app/logger/(.*)": "<rootDir>/../libs/logger/src/$1",
-    "@app/logger": "<rootDir>/../libs/logger/src"
+    "@app/logger": "<rootDir>/../libs/logger/src",
+    "@app/bcrypt/(.*)": "<rootDir>/../libs/bcrypt/src/$1",
+    "@app/bcrypt": "<rootDir>/../libs/bcrypt/src"
   }
 }

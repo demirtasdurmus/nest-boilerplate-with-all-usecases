@@ -5,10 +5,12 @@ import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { IConfig } from 'src/config/config.interface';
+import { BcryptModule } from '@app/bcrypt';
 
 @Module({
   imports: [
     UserModule,
+    BcryptModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService<IConfig, true>) => ({

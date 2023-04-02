@@ -36,6 +36,12 @@
       ],
       "@app/logger/*": [
         "libs/logger/src/*"
+      ],
+      "@app/bcrypt": [
+        "libs/bcrypt/src"
+      ],
+      "@app/bcrypt/*": [
+        "libs/bcrypt/src/*"
       ]
     }
   }

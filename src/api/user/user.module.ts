@@ -4,6 +4,7 @@ import { UserController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
 import { UserStatus } from './interfaces/user.interface';
+import { BcryptModule } from '@app/bcrypt';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UserStatus } from './interfaces/user.interface';
         },
       },
     ]),
+    BcryptModule,
   ],
   controllers: [UserController],
   providers: [UserService],

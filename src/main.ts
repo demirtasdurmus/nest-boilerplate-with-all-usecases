@@ -21,6 +21,8 @@ async function bootstrap() {
   /* Set Custom logger as app logger */
   app.useLogger(new LoggerService().createWinstonLogger('VEHICLES'));
 
+  app.enableCors();
+
   // process.env.NO_COLOR = 'true';  //To disable color in the default logger's messages
 
   app.setGlobalPrefix(API_PREFIX);

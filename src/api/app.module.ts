@@ -47,6 +47,8 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '../guards/auth.guard';
+import helmet from 'helmet';
+import csurf from 'csurf';
 
 @Module({
   imports: [
@@ -230,6 +232,8 @@ export class AppModule implements NestModule {
         In that case, you should not use compression middleware.
         */
         compression(), // Compression Middleware
+        helmet(), // Helmet Middleware
+        csurf(), // CSRF Middleware
       )
       .forRoutes('*');
   }

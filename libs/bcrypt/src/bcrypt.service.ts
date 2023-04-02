@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { SALT_ROUNDS } from './constants/salt-rounds.constant';
+import { BcryptOptions } from './interfaces/bcrypt-options.interface';
 
 interface IBcryptService {
   hash(hashString: string): Promise<string>;
@@ -8,10 +10,11 @@ interface IBcryptService {
 
 @Injectable()
 export class BcryptService implements IBcryptService {
-  private readonly saltRounds = 10;
+  constructor(@Inject(SALT_ROUNDS) private readonly bcryptOptions: BcryptOptions) {}
 
   async hash(hashString: string): Promise<string> {
-    const salt = await bcrypt.genSalt(this.saltRounds);
+    const rounds = this.bcryptOptions.saltRounds || 10;
+    const salt = await bcrypt.genSalt(rounds);
     return await bcrypt.hash(hashString, salt);
   }
 

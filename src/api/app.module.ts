@@ -255,7 +255,7 @@ export class AppModule implements NestModule {
         */
         compression(), // Compression Middleware
         helmet(), // Helmet Middleware
-        csurf(), // CSRF Middleware
+        // csurf(), // CSRF Middleware
       )
       .forRoutes('*');
   }

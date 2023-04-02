@@ -8,5 +8,7 @@ export interface IConfig {
   DB_USER: string;
   DB_PASS: string;
 
+  BCRYPT_SALT_ROUNDS: number;
+
   JWT_SECRET: string;
 }

@@ -10,7 +10,12 @@ import { BcryptModule } from '@app/bcrypt';
 @Module({
   imports: [
     UserModule,
-    BcryptModule,
+    BcryptModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<IConfig, true>) => ({
+        saltRounds: config.get('BCRYPT_SALT_ROUNDS', { infer: true }),
+      }),
+    }),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService<IConfig, true>) => ({

@@ -10,5 +10,7 @@ export const configValidationSchema = Joi.object<IConfig>({
   DB_USER: Joi.optional().default(''),
   DB_PASS: Joi.optional().default(''),
 
+  BCRYPT_SALT_ROUNDS: Joi.number().required(),
+
   JWT_SECRET: Joi.string().required(),
 });

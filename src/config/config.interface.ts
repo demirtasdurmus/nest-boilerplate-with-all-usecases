@@ -7,4 +7,6 @@ export interface IConfig {
   DB_AUTHSOURCE: string;
   DB_USER: string;
   DB_PASS: string;
+
+  JWT_SECRET: string;
 }

@@ -45,6 +45,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { HttpModule } from '@nestjs/axios';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from '../guards/auth.guard';
 
 @Module({
   imports: [
@@ -183,6 +185,8 @@ import { AuthModule } from './auth/auth.module';
     /* Event Emitter Listener Providers */
     OrderCreatedListener,
 
+    JwtService,
+
     /*Global Pipes*/
     {
       provide: APP_PIPE,
@@ -191,6 +195,10 @@ import { AuthModule } from './auth/auth.module';
     {
       provide: APP_FILTER,
       useClass: MongoException,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
     {
       provide: APP_GUARD,

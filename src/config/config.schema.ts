@@ -9,4 +9,6 @@ export const configValidationSchema = Joi.object<IConfig>({
   DB_AUTHSOURCE: Joi.string().required(),
   DB_USER: Joi.optional().default(''),
   DB_PASS: Joi.optional().default(''),
+
+  JWT_SECRET: Joi.string().required(),
 });

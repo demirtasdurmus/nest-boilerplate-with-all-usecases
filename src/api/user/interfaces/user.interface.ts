@@ -5,7 +5,7 @@ export enum UserStatus {
   BANNED = 'banned',
 }
 
-export enum UserRoles {
+export enum UserRole {
   ADMIN = 'admin',
   DEVELOPER = 'developer',
   USER = 'user',
@@ -18,7 +18,7 @@ export interface IUser {
   email: string;
   password: string;
   status: UserStatus;
-  roles: UserRoles[];
+  roles: UserRole[];
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;

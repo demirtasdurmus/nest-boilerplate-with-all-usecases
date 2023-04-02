@@ -79,7 +79,6 @@ export class TestSerializeDto {
   // version: '1',
   // version: VERSION_NEUTRAL // doesn't care about version
 })
-@Roles('user')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
@@ -107,7 +106,6 @@ export class AppController {
   }
 
   @Get('pipes/:id')
-  @Roles('admin')
   @UseInterceptors(LoggingInterceptor)
   getPipes(
     @Param('id', ParseUUIDPipe) id: string,
@@ -121,7 +119,6 @@ export class AppController {
   }
 
   @Get('roles/:id')
-  @Roles('admin')
   @UseInterceptors(TransformInterceptor)
   getRoles() {
     console.log('Im logging inside the handler');

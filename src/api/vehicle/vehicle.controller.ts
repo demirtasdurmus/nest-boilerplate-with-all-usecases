@@ -3,12 +3,15 @@ import { VehicleService } from './vehicle.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { IVehicle } from './interfaces/vehicle.interface';
+import { Roles } from '../../decorators/roles.decorator';
+import { UserRole } from '../user/interfaces/user.interface';
 
 @Controller('vehicles')
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
   @Post()
+  @Roles(UserRole.ADMIN, UserRole.DEVELOPER, UserRole.USER)
   async create(@Body() createVehicleDto: CreateVehicleDto): Promise<IVehicle> {
     return this.vehicleService.create(createVehicleDto);
   }

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { IUser, UserRoles, UserStatus } from '../interfaces/user.interface';
+import { IUser, UserRole, UserStatus } from '../interfaces/user.interface';
 
 @Schema({
   timestamps: true,
@@ -36,8 +36,8 @@ export class User implements IUser {
   @Prop({ type: String, enum: UserStatus, default: UserStatus.ACTIVE })
   status: UserStatus;
 
-  @Prop({ type: [String], enum: UserRoles, default: [UserRoles.USER] })
-  roles: UserRoles[];
+  @Prop({ type: [String], enum: UserRole, default: [UserRole.USER] })
+  roles: UserRole[];
 
   @Prop()
   createdAt: Date;

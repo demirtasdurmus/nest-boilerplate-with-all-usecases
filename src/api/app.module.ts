@@ -49,6 +49,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '../guards/auth.guard';
 import helmet from 'helmet';
 import csurf from 'csurf';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -168,6 +169,21 @@ import csurf from 'csurf';
       }),
     }),
 
+    /* Rate Limit */
+
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
+    // ThrottlerModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: (config: ConfigService) => ({
+    //     ttl: config.get('THROTTLE_TTL'),
+    //     limit: config.get('THROTTLE_LIMIT'),
+    //   }),
+    // }),
+
     VehicleModule,
 
     UserModule,
@@ -198,6 +214,12 @@ import csurf from 'csurf';
       provide: APP_FILTER,
       useClass: MongoException,
     },
+
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+
     {
       provide: APP_GUARD,
       useClass: AuthGuard,

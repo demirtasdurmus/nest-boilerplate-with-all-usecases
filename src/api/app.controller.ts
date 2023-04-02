@@ -59,6 +59,7 @@ import { CustomFileValidator } from '../validators/custom-file.validator';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { interval, map, Observable } from 'rxjs';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 
 export enum STATUS {
   ACTIVE = 'ACTIVE',
@@ -248,6 +249,18 @@ export class AppController {
   @Sse('sse')
   sse(): Observable<MessageEvent> {
     return interval(1000).pipe(map((_) => ({ data: { hello: 'world' } })));
+  }
+
+  @SkipThrottle(false)
+  dontSkip() {
+    return 'List users work with Rate limiting.';
+  }
+
+  // Override default configuration for Rate limiting and duration.
+  @Throttle(3, 60)
+  @Get()
+  findAll() {
+    return 'List users works with custom rate limiting.';
   }
 }
 

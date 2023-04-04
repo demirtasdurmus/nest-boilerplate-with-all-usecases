@@ -8,6 +8,10 @@ import { rainbow } from '@colors/colors/safe';
 import { API_PREFIX } from './constants/api-prefix.constant';
 import { CustomLogger } from './logger/custom.logger';
 import { LoggerService } from '@app/logger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AuthModule } from './api/auth/auth.module';
+import { UserModule } from './api/user/user.module';
+import { VehicleModule } from './api/vehicle/vehicle.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<INestApplication>(AppModule, {
@@ -34,6 +38,25 @@ async function bootstrap() {
   // const { LazyModule } = await import('./lib/lazy/lazy.module');
   // const lazyModuleLoader = app.get(LazyModuleLoader);
   // const moduleRef = await lazyModuleLoader.load(() => LazyModule);
+
+  /* Swagger Module Setup */
+  const config = new DocumentBuilder()
+    .setTitle('Vehicles API')
+    .setDescription('The Vehicles API description')
+    .setVersion('1.0')
+    // .addTag('Vehicles')
+    .addCookieAuth('__session-x')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config, {
+    include: [AuthModule, UserModule, VehicleModule],
+    ignoreGlobalPrefix: true,
+  });
+
+  SwaggerModule.setup('docs', app, document, {
+    customSiteTitle: 'Vehicles API',
+    // explorer: true,
+  });
 
   const configService = app.get(ConfigService<IConfig, true>);
 

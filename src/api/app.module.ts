@@ -184,11 +184,11 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     //   }),
     // }),
 
-    VehicleModule,
+    AuthModule,
 
     UserModule,
 
-    AuthModule,
+    VehicleModule,
   ],
   controllers: [AppController],
   providers: [

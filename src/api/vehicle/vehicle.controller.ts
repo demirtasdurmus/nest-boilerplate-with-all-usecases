@@ -5,8 +5,10 @@ import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { IVehicle } from './interfaces/vehicle.interface';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserRole } from '../user/interfaces/user.interface';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('vehicles')
+@ApiTags('Vehicle')
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 

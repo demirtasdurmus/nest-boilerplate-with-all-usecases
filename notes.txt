@@ -1,3 +1,24 @@
 * Nest Execution Order
 
 Client Request-> Middlewares -> Guards -> Interceptors -> Pipes -> (Exception Filters?) -> Req Handlers -> (Exception Filters?) -> Interceptors -> Server Response
+
+* Nest Swagger Integration
+
+"plugins": [
+  {
+    "name": "@nestjs/swagger",
+    "options": {
+      "classValidatorShim": false,
+      "introspectComments": true
+    }
+  }
+]
+
+export interface PluginOptions {
+  dtoFileNameSuffix?: string[];
+  controllerFileNameSuffix?: string[];
+  classValidatorShim?: boolean;
+  dtoKeyOfComment?: string;
+  controllerKeyOfComment?: string;
+  introspectComments?: boolean;
+}

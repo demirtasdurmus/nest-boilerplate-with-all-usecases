@@ -11,15 +11,15 @@ import {
 } from '@nestjs/common';
 import { ModuleRef, REQUEST } from '@nestjs/core';
 import { Request } from 'express';
-import { STATUS } from './app.controller';
+import { STATUS } from './sandbox.controller';
 import { DynamicTestService } from '@app/dynamic-test';
 import { Cache } from 'cache-manager';
 import { Cron, CronExpression, Interval, SchedulerRegistry, Timeout } from '@nestjs/schedule';
 import { CronJob } from 'cron';
-import { TestAudioProducer } from '../queues/producers/test-audio.producer';
-import { TestScheduleJob } from '../jobs/test-schedule.job';
+import { TestAudioProducer } from '../../queues/producers/test-audio.producer';
+import { TestScheduleJob } from '../../jobs/test-schedule.job';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { OrderCreatedEvent } from '../events/dispatchers/order-created.event';
+import { OrderCreatedEvent } from '../../events/dispatchers/order-created.event';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, map } from 'rxjs';
 import { AxiosError } from 'axios';
@@ -27,8 +27,8 @@ import { AxiosError } from 'axios';
 @Injectable({
   scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
 })
-export class AppService implements OnModuleInit {
-  private readonly logger = new Logger(AppService.name);
+export class SandboxService implements OnModuleInit {
+  private readonly logger = new Logger(SandboxService.name);
   // private service: Service;
   constructor(
     // @Inject(REQUEST) private request: Request, // reaching the request obj in Request scoped provider

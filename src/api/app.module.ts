@@ -13,17 +13,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { MongooseModule, MongooseModuleFactoryOptions } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { ScheduleModule } from '@nestjs/schedule';
-import { BullModule } from '@nestjs/bull';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 
 import { LoggerModule, LoggerService } from '@app/logger';
 import { DynamicTestModule } from '@app/dynamic-test';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { IConfig } from '../config/config.interface';
 import { configValidationSchema } from '../config/config.schema';
 import { MongoException } from '../filters/mongodb-exception.filter';
@@ -36,13 +31,6 @@ import customConfiguration from '../config/custom-configuration';
 import registerAsConfiguration from '../config/register-as-configuration';
 import { validate } from '../config/env.validation';
 import { MongooseConnectionUtil } from '../utils/mongoose-connection.util';
-import { CacheConfigService } from '../utils/cache-connection.util';
-import { TestAudioProducer } from '../queues/producers/test-audio.producer';
-import { TestAudioConsumer } from '../queues/consumers/test-audio.consumer';
-import { TestScheduleJob } from '../jobs/test-schedule.job';
-import { OrderCreatedListener } from '../events/listeners/order-created.listener';
-import { MulterModule } from '@nestjs/platform-express';
-import { HttpModule } from '@nestjs/axios';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtService } from '@nestjs/jwt';
@@ -50,6 +38,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import helmet from 'helmet';
 import csurf from 'csurf';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { SandboxModule } from './sandbox/sandbox.module';
 
 @Module({
   imports: [
@@ -93,116 +82,15 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
       },
     }),
 
-    /*CACHE Module Configuration*/
-
-    // CacheModule.registerAsync({ // using a util class to create the connection
-    //   useClass: CacheConfigService,
-    // }),
-    CacheModule.register({
-      isGlobal: true,
-      ttl: 5, // seconds
-      max: 10, // maximum number of items in cache
-    }),
-
-    /* Task Schedule Module Configuration*/
-
-    ScheduleModule.forRoot(),
-
-    /*QUEUE Module Configuration*/
-
-    // BullModule.forRoot({
-    //   redis: {
-    //     host: 'localhost',
-    //     port: 6379,
-    //   },
-    // }),
-    BullModule.forRootAsync({
-      useFactory: () => ({
-        redis: {
-          host: 'localhost',
-          port: 6379,
-        },
-      }),
-    }),
-    BullModule.registerQueue({
-      name: 'test-queue',
-    }),
-
-    /* Events Module Configuration */
-
-    EventEmitterModule.forRoot({
-      // set this to `true` to use wildcards
-      wildcard: false,
-      // the delimiter used to segment namespaces
-      delimiter: '.',
-      // set this to `true` if you want to emit the newListener event
-      newListener: false,
-      // set this to `true` if you want to emit the removeListener event
-      removeListener: false,
-      // the maximum amount of listeners that can be assigned to an event
-      maxListeners: 10,
-      // show event name in memory leak message when more than maximum amount of listeners is assigned
-      verboseMemoryLeak: false,
-      // disable throwing uncaughtException if an error event is emitted and it has no listeners
-      ignoreErrors: false,
-    }),
-
-    /* File Upload Module */
-    MulterModule.registerAsync({
-      useFactory: () => ({
-        // dest: './upload',
-      }),
-    }),
-
-    /* Dynamic Module Configuration */
-    DynamicTestModule.forRoot({ name: 'first conf value', value: 2 }),
-
-    /* HTTP Module*/
-    // HttpModule.register({
-    //   timeout: 5000,
-    //   maxRedirects: 5,
-    // }),
-    HttpModule.registerAsync({
-      useFactory: () => ({
-        timeout: 5000,
-        maxRedirects: 5,
-      }),
-    }),
-
-    /* Rate Limit */
-
-    ThrottlerModule.forRoot({
-      ttl: 60,
-      limit: 10,
-    }),
-    // ThrottlerModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: (config: ConfigService) => ({
-    //     ttl: config.get('THROTTLE_TTL'),
-    //     limit: config.get('THROTTLE_LIMIT'),
-    //   }),
-    // }),
-
     AuthModule,
 
     UserModule,
 
     VehicleModule,
+
+    SandboxModule,
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
-    /* Consumer and Producer providers */
-    TestAudioProducer,
-    TestAudioConsumer,
-
-    /* Schedule providers */
-    TestScheduleJob,
-
-    /* Event Emitter Listener Providers */
-    OrderCreatedListener,
-
     JwtService,
 
     /*Global Pipes*/

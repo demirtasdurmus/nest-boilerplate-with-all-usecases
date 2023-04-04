@@ -36,30 +36,31 @@ import {
 } from '@nestjs/common';
 import { Expose } from 'class-transformer';
 
-import { AppService } from './app.service';
-import { CombinedAuth } from '../decorators/combined-auth.decorator';
-import { CurrentUser } from '../decorators/current-user.decorator';
-import { CurrentUserDto } from '../decorators/current-user.dto';
-import { Roles } from '../decorators/roles.decorator';
-import { AuthGuard } from '../guards/auth.guard';
-import { RolesGuard } from '../guards/roles.guard';
-import { ErrorInterceptor } from '../interceptors/error.interceptor';
-import { ExcludeNullInterceptor } from '../interceptors/exclude-null.interceptor';
-import { LoggingInterceptor } from '../interceptors/logging.interceptor';
-import { Serialize } from '../interceptors/serialize.interceptor';
-import { TimeoutInterceptor } from '../interceptors/timeout.interceptor';
-import { TransformInterceptor } from '../interceptors/transform.interceptor';
-import { joiTestSchema } from '../pipes/joi-test.schema';
-import { JoiValidation } from '../pipes/joi-validation.pipe';
-import { PipeUser, UserById } from '../pipes/user-by-id.pipe';
+import { SandboxService } from './sandbox.service';
+import { CombinedAuth } from '../../decorators/combined-auth.decorator';
+import { CurrentUser } from '../../decorators/current-user.decorator';
+import { CurrentUserDto } from '../../decorators/current-user.dto';
+import { Roles } from '../../decorators/roles.decorator';
+import { AuthGuard } from '../../guards/auth.guard';
+import { RolesGuard } from '../../guards/roles.guard';
+import { ErrorInterceptor } from '../../interceptors/error.interceptor';
+import { ExcludeNullInterceptor } from '../../interceptors/exclude-null.interceptor';
+import { LoggingInterceptor } from '../../interceptors/logging.interceptor';
+import { Serialize } from '../../interceptors/serialize.interceptor';
+import { TimeoutInterceptor } from '../../interceptors/timeout.interceptor';
+import { TransformInterceptor } from '../../interceptors/transform.interceptor';
+import { joiTestSchema } from '../../pipes/joi-test.schema';
+import { JoiValidation } from '../../pipes/joi-validation.pipe';
+import { PipeUser, UserById } from '../../pipes/user-by-id.pipe';
 import { Request, Response } from 'express';
-import { Cookies } from '../decorators/cookies.decorator';
+import { Cookies } from '../../decorators/cookies.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CustomFileValidator } from '../validators/custom-file.validator';
+import { CustomFileValidator } from '../../validators/custom-file.validator';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { interval, map, Observable } from 'rxjs';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
+import { ApiTags } from '@nestjs/swagger';
 
 export enum STATUS {
   ACTIVE = 'ACTIVE',
@@ -74,36 +75,37 @@ export class TestSerializeDto {
   name: string;
 }
 
+@ApiTags('Sandbox')
 @Controller({
-  path: '/',
+  path: '/sandbox',
   scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
   // version: '1',
   // version: VERSION_NEUTRAL // doesn't care about version
 })
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+export class SandboxController {
+  constructor(private readonly sandboxService: SandboxService) {}
 
   @Get()
   // @Version('1')
   @UseGuards(AuthGuard, RolesGuard)
   getData() {
-    return this.appService.getData();
+    return this.sandboxService.getData();
   }
 
   @Get('dynamic')
   getDynamicData() {
-    return this.appService.testDynamicModule();
+    return this.sandboxService.testDynamicModule();
   }
 
   @Get('exception')
   getException() {
-    return this.appService.testHttpException();
+    return this.sandboxService.testHttpException();
   }
 
   @Get('pipes')
   @UsePipes(new JoiValidation(joiTestSchema))
   getValidationPipes(@Body() data: any) {
-    return this.appService.testJoiValidationPipe(data);
+    return this.sandboxService.testJoiValidationPipe(data);
   }
 
   @Get('pipes/:id')
@@ -116,14 +118,14 @@ export class AppController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @Param('id', UserById) user: PipeUser,
   ) {
-    return this.appService.testParsePipe(id, status);
+    return this.sandboxService.testParsePipe(id, status);
   }
 
   @Get('roles/:id')
   @UseInterceptors(TransformInterceptor)
   getRoles() {
     console.log('Im logging inside the handler');
-    return this.appService.testRoleGuard('roles');
+    return this.sandboxService.testRoleGuard('roles');
   }
 
   @Get('exclude-null')
@@ -172,23 +174,23 @@ export class AppController {
   // @CacheKey('custom_key') // custom key for caching, can be used with @CacheTTL()
   // @CacheTTL(10) // custom TTL for caching (in seconds
   testCache() {
-    return this.appService.testCache();
+    return this.sandboxService.testCache();
   }
 
   @Get('serialize')
   @Serialize(TestSerializeDto)
   testSerialize() {
-    return this.appService.testSerializeInterceptor();
+    return this.sandboxService.testSerializeInterceptor();
   }
 
   @Get('cron')
   manageCron() {
-    return this.appService.manageCron();
+    return this.sandboxService.manageCron();
   }
 
   @Get('queue')
   manageQueue() {
-    return this.appService.testQueue();
+    return this.sandboxService.testQueue();
   }
 
   @Get('get-cookies')
@@ -204,7 +206,7 @@ export class AppController {
 
   @Get('events')
   testEventEmitter() {
-    return this.appService.testEventEmitter();
+    return this.sandboxService.testEventEmitter();
   }
 
   @Post('upload')
@@ -243,7 +245,7 @@ export class AppController {
 
   @Get('http')
   testHttpService() {
-    return this.appService.testHTTPService();
+    return this.sandboxService.testHTTPService();
   }
 
   @Sse('sse')

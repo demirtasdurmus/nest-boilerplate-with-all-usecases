@@ -49,7 +49,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config, {
-    include: [AuthModule, UserModule, VehicleModule],
+    // include: [AuthModule, UserModule, VehicleModule],
     ignoreGlobalPrefix: true,
   });
 

@@ -39,6 +39,7 @@ import helmet from 'helmet';
 import csurf from 'csurf';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { SandboxModule } from './sandbox/sandbox.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -89,6 +90,8 @@ import { SandboxModule } from './sandbox/sandbox.module';
     VehicleModule,
 
     SandboxModule,
+
+    HealthModule,
   ],
   providers: [
     JwtService,

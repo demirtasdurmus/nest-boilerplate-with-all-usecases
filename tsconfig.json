@@ -42,6 +42,12 @@
       ],
       "@app/bcrypt/*": [
         "libs/bcrypt/src/*"
+      ],
+      "@app/custom-health": [
+        "libs/custom-health/src"
+      ],
+      "@app/custom-health/*": [
+        "libs/custom-health/src/*"
       ]
     }
   }

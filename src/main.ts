@@ -33,6 +33,9 @@ async function bootstrap() {
 
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
 
+  // Starts listening for shutdown hooks
+  app.enableShutdownHooks();
+
   // TODO: Couldn't get exactly, check this later
   // lazy loading
   // const { LazyModule } = await import('./lib/lazy/lazy.module');

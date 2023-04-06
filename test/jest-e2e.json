@@ -18,6 +18,8 @@
     "@app/logger/(.*)": "<rootDir>/../libs/logger/src/$1",
     "@app/logger": "<rootDir>/../libs/logger/src",
     "@app/bcrypt/(.*)": "<rootDir>/../libs/bcrypt/src/$1",
-    "@app/bcrypt": "<rootDir>/../libs/bcrypt/src"
+    "@app/bcrypt": "<rootDir>/../libs/bcrypt/src",
+    "@app/custom-health/(.*)": "<rootDir>/../libs/custom-health/src/$1",
+    "@app/custom-health": "<rootDir>/../libs/custom-health/src"
   }
 }

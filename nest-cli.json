@@ -51,6 +51,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/bcrypt/tsconfig.lib.json"
       }
+    },
+    "custom-health": {
+      "type": "library",
+      "root": "libs/custom-health",
+      "entryFile": "index",
+      "sourceRoot": "libs/custom-health/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/custom-health/tsconfig.lib.json"
+      }
     }
   }
 }

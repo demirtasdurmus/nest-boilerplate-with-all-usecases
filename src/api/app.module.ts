@@ -40,6 +40,8 @@ import csurf from 'csurf';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { SandboxModule } from './sandbox/sandbox.module';
 import { HealthModule } from './health/health.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -80,6 +82,20 @@ import { HealthModule } from './health/health.module';
             return connection;
           },
         };
+      },
+    }),
+
+    /* Serve Static Module Configuration */
+    ServeStaticModule.forRoot({
+      // rootPath: 'public', // path to static files
+      rootPath: join(__dirname, '..', 'public'), // path to static files
+      exclude: ['/api*'], // exclude all api routes
+      serveStaticOptions: {
+        cacheControl: true,
+        maxAge: 3600,
+        setHeaders: (res, path, stat) => {
+          res.set('x-timestamp', Date.now());
+        },
       },
     }),
 

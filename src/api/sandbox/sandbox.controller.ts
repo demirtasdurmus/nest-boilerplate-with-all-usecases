@@ -264,6 +264,11 @@ export class SandboxController {
   findAll() {
     return 'List users works with custom rate limiting.';
   }
+
+  @Get('cls')
+  testCls() {
+    this.sandboxService.testCls();
+  }
 }
 
 /* Client side conf for subscribing sse*/

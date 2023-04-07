@@ -23,6 +23,7 @@ import { OrderCreatedEvent } from '../../events/dispatchers/order-created.event'
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, map } from 'rxjs';
 import { AxiosError } from 'axios';
+import { ClsService } from 'nestjs-cls';
 
 @Injectable({
   scope: Scope.DEFAULT, // not necessary actually, others are Scope.REQUEST and Scope.TRANSIENT
@@ -40,6 +41,7 @@ export class SandboxService implements OnModuleInit {
     private readonly dynamicService: DynamicTestService,
     private readonly jobService: TestScheduleJob,
     private readonly audioService: TestAudioProducer,
+    private readonly clsService: ClsService<{ protocol: string }>,
   ) {}
 
   onModuleInit() {
@@ -123,5 +125,11 @@ export class SandboxService implements OnModuleInit {
       ),
     );
     return data;
+  }
+
+  async testCls() {
+    const protocol = this.clsService.get('protocol');
+    console.log(protocol);
+    return true;
   }
 }

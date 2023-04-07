@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CacheModule, Module } from '@nestjs/common';
 import { SandboxService } from './sandbox.service';
 import { SandboxController } from './sandbox.controller';
@@ -13,6 +14,8 @@ import { TestAudioProducer } from 'src/queues/producers/test-audio.producer';
 import { TestAudioConsumer } from 'src/queues/consumers/test-audio.consumer';
 import { OrderCreatedListener } from 'src/events/listeners/order-created.listener';
 import { JwtService } from '@nestjs/jwt';
+import { ClsModule, ClsService } from 'nestjs-cls';
+import { Request, Response } from 'express';
 
 @Module({
   imports: [
@@ -107,6 +110,20 @@ import { JwtService } from '@nestjs/jwt';
     //     limit: config.get('THROTTLE_LIMIT'),
     //   }),
     // }),
+
+    /* CLS Module Configuration */
+    ClsModule.forRoot({
+      middleware: {
+        // automatically mount the
+        // ClsMiddleware for all routes
+        mount: true,
+        // and use the setup method to
+        // provide default store values.
+        setup: (cls: ClsService<{ protocol: string }>, req: Request, _res: Response) => {
+          cls.set('protocol', req.protocol);
+        },
+      },
+    }),
   ],
   controllers: [SandboxController],
   providers: [

@@ -8,12 +8,13 @@ import { ConfigService } from '@nestjs/config';
 import { IConfig } from 'src/config/config.interface';
 import { JwtBearerStrategy } from './strategies/jwt-bearer.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { JwtCookieStrategy } from './strategies/jwt-cookie.strategy';
 
 @Module({
   imports: [
     UserModule,
     PassportModule.register({
-      session: true,
+      // session: true,
     }),
     JwtModule.registerAsync({
       useFactory: (config: ConfigService<IConfig, true>): JwtModuleOptions => ({
@@ -25,7 +26,7 @@ import { PassportModule } from '@nestjs/passport';
       inject: [ConfigService],
     }),
   ],
-  providers: [PassportAuthService, LocalStrategy, JwtBearerStrategy],
+  providers: [PassportAuthService, LocalStrategy, JwtBearerStrategy, JwtCookieStrategy],
   controllers: [PassportAuthController],
 })
 export class PassportAuthModule {}

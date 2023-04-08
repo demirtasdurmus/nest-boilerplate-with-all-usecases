@@ -42,6 +42,7 @@ import { SandboxModule } from './sandbox/sandbox.module';
 import { HealthModule } from './health/health.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { PassportAuthModule } from './passport-auth/passport-auth.module';
 
 @Module({
   imports: [
@@ -108,6 +109,8 @@ import { join } from 'path';
     SandboxModule,
 
     HealthModule,
+
+    PassportAuthModule,
   ],
   providers: [
     JwtService,
@@ -127,14 +130,14 @@ import { join } from 'path';
       useClass: ThrottlerGuard,
     },
 
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,

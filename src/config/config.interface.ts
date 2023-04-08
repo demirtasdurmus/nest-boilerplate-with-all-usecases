@@ -11,4 +11,5 @@ export interface IConfig {
   BCRYPT_SALT_ROUNDS: number;
 
   JWT_SECRET: string;
+  JWT_EXPIRES_IN: string;
 }

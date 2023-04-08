@@ -13,4 +13,5 @@ export const configValidationSchema = Joi.object<IConfig>({
   BCRYPT_SALT_ROUNDS: Joi.number().required(),
 
   JWT_SECRET: Joi.string().required(),
+  JWT_EXPIRES_IN: Joi.string().required(),
 });

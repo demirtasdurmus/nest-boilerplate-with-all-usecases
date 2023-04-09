@@ -204,6 +204,6 @@ export class AppModule implements NestModule {
 
       /* CSRF Middleware */
       .apply(csurf({ cookie: true }))
-      .forRoutes('*');
+      .forRoutes('*cookie-session-auth*');
   }
 }

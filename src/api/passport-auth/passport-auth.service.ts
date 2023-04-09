@@ -24,7 +24,6 @@ export class PassportAuthService {
   }
 
   async createAccessToken(data: IJwtData): Promise<string> {
-    console.log('-----', data);
     return this.jwtService.sign(data);
   }
 }

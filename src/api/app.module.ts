@@ -43,6 +43,9 @@ import { HealthModule } from './health/health.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { PassportAuthModule } from './passport-auth/passport-auth.module';
+import { CookieSessionAuthModule } from './cookie-session-auth/cookie-session-auth.module';
+import cookieSession from 'cookie-session';
+import { CurrentUserMiddleware } from './cookie-session-auth/middlewares/current-user.middleware';
 
 @Module({
   imports: [
@@ -111,6 +114,8 @@ import { PassportAuthModule } from './passport-auth/passport-auth.module';
     HealthModule,
 
     PassportAuthModule,
+
+    CookieSessionAuthModule,
   ],
   providers: [
     JwtService,
@@ -150,23 +155,55 @@ import { PassportAuthModule } from './passport-auth/passport-auth.module';
   ],
 })
 export class AppModule implements NestModule {
+  constructor(private readonly config: ConfigService<IConfig, true>) {}
+
   configure(consumer: MiddlewareConsumer) {
     consumer
+
+      /* Custom Logger Middleware Implementations for test purposes */
       .apply(CLogger, fLogger)
       .exclude({ path: 'others', method: RequestMethod.GET })
       .forRoutes({ path: 'dynamic', method: RequestMethod.ALL, version: '2' })
-      .apply(
-        HttpLogger, // Custom Http Logger Middleware
-        cookieParser('secret', {}), // Cookie Parser Middleware
-        /*
+
+      /* Custom Http Logger Middleware */
+      .apply(HttpLogger)
+      .forRoutes('*')
+
+      /* Cookie Parser Middleware */
+      .apply(cookieParser('secret', {}))
+      .forRoutes('*')
+
+      /*
+        Compression Middleware
         For high-traffic websites in production, it is strongly recommended to offload 
         compression from the application server - typically in a reverse proxy (e.g., Nginx). 
         In that case, you should not use compression middleware.
         */
-        compression(), // Compression Middleware
-        helmet(), // Helmet Middleware
-        // csurf(), // CSRF Middleware
+      .apply(compression())
+      .forRoutes('*')
+
+      /* Helmet Middleware */
+      .apply(helmet())
+      .forRoutes('*')
+
+      /* Cookie Session Middleware & Current User Middleware */
+      .apply(
+        cookieSession({
+          name: 'x-session-key',
+          keys: [this.config.get('JWT_SECRET', { infer: true })],
+          maxAge:
+            Number(this.config.get('JWT_EXPIRES_IN', { infer: true }).split('').slice(0, -1).join('')) *
+            24 *
+            60 *
+            60 *
+            1000,
+        }),
+        CurrentUserMiddleware,
       )
+      .forRoutes('*cookie-session-auth*')
+
+      /* CSRF Middleware */
+      .apply(csurf({ cookie: true }))
       .forRoutes('*');
   }
 }

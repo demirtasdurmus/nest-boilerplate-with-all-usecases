@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
-import { IAuthUser, PassportAuthService } from '../passport-auth.service';
+import { PassportAuthService } from '../passport-auth.service';
+import { IJwtData } from '../../../interfaces/jwt.interface';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -12,11 +13,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(email: string, password: string): Promise<IAuthUser> {
+  async validate(email: string, password: string): Promise<IJwtData> {
     const user = await this.authService.validateUser(email, password);
+
     if (!user) {
       throw new BadRequestException('Invalid credentials');
     }
-    return user;
+
+    return { id: user.id };
   }
 }

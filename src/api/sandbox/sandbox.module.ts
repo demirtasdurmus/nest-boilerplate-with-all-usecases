@@ -16,6 +16,8 @@ import { OrderCreatedListener } from 'src/events/listeners/order-created.listene
 import { JwtService } from '@nestjs/jwt';
 import { ClsModule, ClsService } from 'nestjs-cls';
 import { Request, Response } from 'express';
+import { UserService } from '../user/user.service';
+import { BcryptService } from '@app/bcrypt';
 
 @Module({
   imports: [
@@ -97,7 +99,6 @@ import { Request, Response } from 'express';
     }),
 
     /* Rate Limit */
-
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,

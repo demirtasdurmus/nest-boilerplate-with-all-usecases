@@ -34,7 +34,7 @@ import { MongooseConnectionUtil } from '../utils/mongoose-connection.util';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtService } from '@nestjs/jwt';
-import { AuthGuard } from '../guards/auth.guard';
+import { AuthGuard } from './auth/guards/auth.guard';
 import helmet from 'helmet';
 import csurf from 'csurf';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
@@ -139,15 +139,21 @@ import { CurrentUserMiddleware } from './cookie-session-auth/middlewares/current
     //   provide: APP_GUARD,
     //   useClass: AuthGuard,
     // },
+
     // {
     //   provide: APP_GUARD,
     //   useClass: RolesGuard,
     // },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: TransformInterceptor,
-    },
-    //  we can bind CacheInterceptor to all endpoints globally
+
+    /* App interceptor to transform incoming and outgoing data  */
+
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: TransformInterceptor,
+    // },
+
+    /* We can bind CacheInterceptor to all endpoints globally */
+
     // {
     //   provide: 'APP_INTERCEPTOR',
     //   useClass: CacheInterceptor,

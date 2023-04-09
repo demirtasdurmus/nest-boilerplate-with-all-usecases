@@ -1,5 +1,5 @@
 import { applyDecorators, SetMetadata, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../guards/auth.guard';
+import { AuthGuard } from '../api/auth/guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 
 export function CombinedAuth(...roles: string[]) {

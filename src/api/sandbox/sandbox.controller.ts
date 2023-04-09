@@ -26,7 +26,7 @@ import {
   Sse,
   StreamableFile,
   UploadedFile,
-  UseGuards,
+  // UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
@@ -41,8 +41,8 @@ import { CombinedAuth } from '../../decorators/combined-auth.decorator';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import { CurrentUserDto } from '../../decorators/current-user.dto';
 import { Roles } from '../../decorators/roles.decorator';
-import { AuthGuard } from '../../guards/auth.guard';
-import { RolesGuard } from '../../guards/roles.guard';
+// import { AuthGuard } from '../auth/guards/auth.guard';
+// import { RolesGuard } from '../../guards/roles.guard';
 import { ErrorInterceptor } from '../../interceptors/error.interceptor';
 import { ExcludeNullInterceptor } from '../../interceptors/exclude-null.interceptor';
 import { LoggingInterceptor } from '../../interceptors/logging.interceptor';
@@ -85,9 +85,13 @@ export class TestSerializeDto {
 export class SandboxController {
   constructor(private readonly sandboxService: SandboxService) {}
 
+  // @ApiHeader({
+  //   name: 'Set-Cookie',
+  //   description: 'Set-Cookie',
+  // })
   @Get()
   // @Version('1')
-  @UseGuards(AuthGuard, RolesGuard)
+  // @UseGuards(AuthGuard, RolesGuard)
   getData() {
     return this.sandboxService.getData();
   }
@@ -159,7 +163,7 @@ export class SandboxController {
   }
 
   @Get('combined-auth')
-  @CombinedAuth('admin')
+  // @CombinedAuth('admin')
   testCombinedAuth() {
     return 'success';
   }
@@ -209,6 +213,7 @@ export class SandboxController {
     return this.sandboxService.testEventEmitter();
   }
 
+  // @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {

@@ -1,13 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { BcryptService } from '@app/bcrypt';
-import { UserRole } from '../user/interfaces/user.interface';
 import { JwtService } from '@nestjs/jwt';
-
-export interface IAuthUser {
-  email: string;
-  roles: UserRole[];
-}
+import { IJwtData } from '../../interfaces/jwt.interface';
+import { IUser } from '../user/interfaces/user.interface';
 
 @Injectable()
 export class PassportAuthService {
@@ -17,18 +13,18 @@ export class PassportAuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<IAuthUser | null> {
+  async validateUser(email: string, pass: string): Promise<IUser | null> {
     const user = await this.userService.findByEmail(email);
 
     if (user && (await this.bcryptService.compare(pass, user.password))) {
-      const authUser = { email: user.email, roles: user.roles };
-      return authUser;
+      return user;
     }
 
     return null;
   }
 
-  async createAccessToken(user: IAuthUser) {
-    return this.jwtService.sign(user);
+  async createAccessToken(data: IJwtData): Promise<string> {
+    console.log('-----', data);
+    return this.jwtService.sign(data);
   }
 }

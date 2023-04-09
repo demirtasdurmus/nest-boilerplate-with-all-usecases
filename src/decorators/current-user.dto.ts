@@ -1,5 +1,6 @@
 import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from 'class-validator';
-import { ICurrentUser } from './current-user.decorator';
+import { ICurrentUser } from '../interfaces/current-user.interface';
+import { UserRole } from '../api/user/interfaces/user.interface';
 
 export class CurrentUserDto implements ICurrentUser {
   @IsString()
@@ -8,10 +9,18 @@ export class CurrentUserDto implements ICurrentUser {
 
   @IsString()
   @IsNotEmpty()
+  firstName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
+
+  @IsString()
+  @IsNotEmpty()
   email: string;
 
   @ArrayNotEmpty()
   @IsArray()
   @IsNotEmpty()
-  roles: string[];
+  roles: UserRole[];
 }

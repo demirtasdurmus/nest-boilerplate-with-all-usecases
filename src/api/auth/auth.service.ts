@@ -3,6 +3,7 @@ import { UserService } from '../user/user.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { BcryptService } from '@app/bcrypt/bcrypt.service';
+import { IJwtData } from '../../interfaces/jwt.interface';
 
 @Injectable()
 export class AuthService {
@@ -16,11 +17,13 @@ export class AuthService {
     const user = await this.userService.findByEmail(loginUserDto.email);
 
     if (user && (await this.bcryptService.compare(loginUserDto.password, user.password))) {
-      const payload = { email: user.email, roles: user.roles };
-      return {
-        accessToken: await this.jwtService.signAsync(payload),
-      };
+      const data: IJwtData = { id: user.id };
+
+      const accessToken = await this.jwtService.signAsync(data);
+
+      return { accessToken };
     }
+
     throw new BadRequestException('Invalid credentials');
   }
 }

@@ -7,8 +7,6 @@ export const CurrentUser = createParamDecorator<keyof ICurrentUser>(
 
     const { user }: { user: ICurrentUser } = req;
 
-    console.log('---', req.user);
-
     return data ? user[data] : user;
   },
 );

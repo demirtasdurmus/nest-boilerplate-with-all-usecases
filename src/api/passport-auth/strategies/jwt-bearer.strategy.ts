@@ -6,9 +6,10 @@ import { ConfigService } from '@nestjs/config';
 import { UserService } from '../../../api/user/user.service';
 import { IJwtPayload } from '../../../interfaces/jwt.interface';
 import { ICurrentUser } from '../../../interfaces/current-user.interface';
+import { JWT_BEARER_STRATEGY } from '../constants/jwt-bearer-strategy.constant';
 
 @Injectable()
-export class JwtBearerStrategy extends PassportStrategy(Strategy, 'jwt-bearer') {
+export class JwtBearerStrategy extends PassportStrategy(Strategy, JWT_BEARER_STRATEGY) {
   constructor(private readonly userService: UserService, private readonly config: ConfigService<IConfig, true>) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

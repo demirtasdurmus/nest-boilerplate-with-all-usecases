@@ -14,4 +14,6 @@ export const configValidationSchema = Joi.object<IConfig>({
 
   JWT_SECRET: Joi.string().required(),
   JWT_EXPIRES_IN: Joi.string().required(),
+
+  AUTH_COOKIE_NAME: Joi.string().required(),
 });

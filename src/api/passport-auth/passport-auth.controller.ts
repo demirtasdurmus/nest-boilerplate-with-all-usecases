@@ -6,7 +6,8 @@ import { JwtBearerAuthGuard } from './guards/jwt-bearer.guard';
 import { JwtCookieAuthGuard } from './guards/jwt-cookie.guard';
 import { ConfigService } from '@nestjs/config';
 import { IConfig } from '../../config/config.interface';
-import { IJwtData } from 'src/interfaces/jwt.interface';
+import { IJwtData } from '../../interfaces/jwt.interface';
+import { Public } from '../../decorators/public.decorator';
 
 @Controller('passport-auth')
 export class PassportAuthController {
@@ -15,7 +16,7 @@ export class PassportAuthController {
     private readonly config: ConfigService<IConfig, true>,
   ) {}
 
-  /* Bearer Token Implementation */
+  /* Bearer Token Implementations */
   @Post('login-bearer')
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
@@ -31,21 +32,29 @@ export class PassportAuthController {
     return req.user;
   }
 
+  @Get('public-bearer')
+  @Public()
+  @UseGuards(JwtBearerAuthGuard)
+  getPublicInfoBearer(@Req() req: Request) {
+    return `This is a public route, req user data: ${JSON.stringify(req.user)}`;
+  }
+
   @Get('logout-bearer')
-  logout() {
+  logoutBearer() {
     return 'Nothing to perform here, maybe you want to clear the cookie? 🤷‍♂️';
   }
 
+  /* Http-only Cookie Implementations */
   @Post('login-cookie')
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   async loginCookie(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    const token = await this.authService.createAccessToken(req.user as IJwtData);
+    const accessToken = await this.authService.createAccessToken(req.user as IJwtData);
 
     const day = this.config.get('JWT_EXPIRES_IN', { infer: true }).split('').slice(0, -1).join('');
     const expires = new Date(Date.now() + Number(day) * 24 * 60 * 60 * 1000);
 
-    res.cookie('access_token', token, {
+    res.cookie(this.config.get('AUTH_COOKIE_NAME', { infer: true }), accessToken, {
       httpOnly: true,
       secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
       sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'strict',
@@ -59,5 +68,19 @@ export class PassportAuthController {
   @UseGuards(JwtCookieAuthGuard)
   getProfileCookie(@Req() req: Request) {
     return req.user;
+  }
+
+  @Get('public-cookie')
+  @Public()
+  @UseGuards(JwtCookieAuthGuard)
+  getPublicInfoCookie(@Req() req: Request) {
+    return `This is a public route, req user data: ${JSON.stringify(req.user)}`;
+  }
+
+  @Get('logout-cookie')
+  logoutCookie(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie(this.config.get('AUTH_COOKIE_NAME', { infer: true }));
+
+    return { message: 'success' };
   }
 }

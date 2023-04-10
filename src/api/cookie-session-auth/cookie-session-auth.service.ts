@@ -1,24 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { BcryptService } from '@app/bcrypt';
-import { UserRole } from '../user/interfaces/user.interface';
 import { LoginUserDto } from './dto/login-user.dto';
-
-export interface IAuthUser {
-  email: string;
-  roles: UserRole[];
-}
+import { IJwtData } from '../../interfaces/jwt.interface';
 
 @Injectable()
 export class CookieSessionAuthService {
   constructor(private readonly userService: UserService, private readonly bcryptService: BcryptService) {}
 
-  async login(loginDto: LoginUserDto): Promise<IAuthUser> {
+  async login(loginDto: LoginUserDto): Promise<IJwtData> {
     const user = await this.userService.findByEmail(loginDto.email);
 
     if (user && (await this.bcryptService.compare(loginDto.password, user.password))) {
-      const authUser = { email: user.email, roles: user.roles };
-      return authUser;
+      return { id: user.id };
     }
 
     throw new BadRequestException('Invalid credentials');

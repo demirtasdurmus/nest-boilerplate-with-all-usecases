@@ -190,26 +190,6 @@ export class AppModule implements NestModule {
 
       /* Helmet Middleware */
       .apply(helmet())
-      .forRoutes('*')
-
-      /* Cookie Session Middleware & Current User Middleware */
-      .apply(
-        cookieSession({
-          name: 'x-session-key',
-          keys: [this.config.get('JWT_SECRET', { infer: true })],
-          maxAge:
-            Number(this.config.get('JWT_EXPIRES_IN', { infer: true }).split('').slice(0, -1).join('')) *
-            24 *
-            60 *
-            60 *
-            1000,
-        }),
-        CurrentUserMiddleware,
-      )
-      .forRoutes('*cookie-session-auth*')
-
-      /* CSRF Middleware */
-      .apply(csurf({ cookie: true }))
-      .forRoutes('*cookie-session-auth*');
+      .forRoutes('*');
   }
 }

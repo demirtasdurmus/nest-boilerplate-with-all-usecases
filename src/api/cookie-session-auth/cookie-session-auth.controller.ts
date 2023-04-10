@@ -12,8 +12,8 @@ export class CookieSessionAuthController {
   @Post('login')
   @HttpCode(200)
   async login(@Body() loginDto: LoginUserDto, @Session() session: any) {
-    const user = await this.authService.login(loginDto);
-    session.user = user;
+    const data = await this.authService.login(loginDto);
+    session.userId = data.id;
     return { message: 'success' };
   }
 
@@ -25,7 +25,7 @@ export class CookieSessionAuthController {
 
   @Get('logout')
   async logout(@Session() session: any): Promise<void> {
-    session.user = null;
+    session.userId = null;
     return;
   }
 }

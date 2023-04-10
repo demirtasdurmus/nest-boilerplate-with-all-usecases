@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { PUBLIC_KEY } from '../../../constants/public-key.constant';
@@ -24,14 +24,16 @@ export class JwtBearerAuthGuard extends AuthGuard(JWT_BEARER_STRATEGY) {
     return super.canActivate(context);
   }
 
-  // handleRequest(err, user, info) {
-  //   // You can throw an exception based on either "info" or "err" arguments
-  //   if (err || !user) {
-  //     throw err || new UnauthorizedException();
-  //   }
-  //   return user;
-  // }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handleRequest(err: any, user: any, _info: any, _context: ExecutionContext, _status?: any) {
+    // You can throw an exception based on either "info" or "err" arguments
+    if (err || !user) {
+      throw err || new UnauthorizedException();
+    }
+    return user;
+  }
 }
 
 /* Adding multiple strategies */
+
 // export class JwtBearerAuthGuard extends AuthGuard(['strategy_jwt_1', 'strategy_jwt_2', '...']) { ... }

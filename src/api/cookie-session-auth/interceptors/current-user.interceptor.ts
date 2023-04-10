@@ -13,21 +13,23 @@ export class CurrentUserInterceptor implements NestInterceptor {
 
   async intercept(context: ExecutionContext, next: CallHandler<any>): Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest<Request>();
-    const { user } = request.session || {};
+    const { userId } = request.session || {};
 
-    if (user) {
-      const currentUser = (await this.userService.findByEmail(user.email)) as IUser;
+    if (userId) {
+      const currentUser = (await this.userService.findById(userId)) as IUser;
+
       if (!currentUser) {
         throw new UnauthorizedException();
       }
-      request.currentUser = {
-        id: currentUser.id!,
+      request.user = {
+        id: currentUser.id,
         firstName: currentUser.firstName,
         lastName: currentUser.lastName,
         email: currentUser.email,
         roles: currentUser.roles,
       };
     }
+
     return next.handle();
   }
 }

@@ -7,9 +7,11 @@ import { Request } from 'express';
 import { Public } from '../../decorators/public.decorator';
 import { ApiConflictResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from './guards/auth.guard';
+import { IResponseMessage } from '../../interfaces/response-message.interface';
+import { ResponseMessage } from '../../utils/response-message.util';
+import { CurrentUser } from '../../decorators/current-user.decorator';
 @Controller('auth')
 @ApiTags('Auth')
-@UseGuards(AuthGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService, private readonly userService: UserService) {}
 
@@ -17,8 +19,9 @@ export class AuthController {
   @ApiConflictResponse()
   @Post('register')
   @Public()
-  register(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async register(@Body() createUserDto: CreateUserDto): Promise<IResponseMessage> {
+    await this.userService.create(createUserDto);
+    return ResponseMessage('success');
   }
 
   @Post('login')
@@ -28,14 +31,28 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
+  @Get('me')
+  @UseGuards(AuthGuard)
+  me(@Req() req: Request) {
+    return req.user;
+  }
+
+  @Get('email')
+  @UseGuards(AuthGuard)
+  getEmail(@CurrentUser('email') email: string) {
+    return email;
+  }
+
+  @Get('public')
+  @Public()
+  @UseGuards(AuthGuard)
+  getPublicInfo(@Req() req: Request) {
+    return `This is a public route, req user data: ${JSON.stringify(req.user)}`;
+  }
+
   @Get('logout')
   @Public()
   logout() {
-    return 'Nothing to perform here, maybe you want to clear the cookie? 🤷‍♂️';
-  }
-
-  @Get('me')
-  me(@Req() req: Request) {
-    return req.user;
+    return 'Nothing to perform here, maybe you want to revoke the access token? 🤷‍♂️';
   }
 }

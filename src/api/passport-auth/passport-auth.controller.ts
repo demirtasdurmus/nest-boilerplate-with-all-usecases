@@ -8,6 +8,8 @@ import { ConfigService } from '@nestjs/config';
 import { IConfig } from '../../config/config.interface';
 import { IJwtData } from '../../interfaces/jwt.interface';
 import { Public } from '../../decorators/public.decorator';
+import { CurrentUser } from '../../decorators/current-user.decorator';
+import { ICurrentUser } from '../../interfaces/current-user.interface';
 
 @Controller('passport-auth')
 export class PassportAuthController {
@@ -32,6 +34,12 @@ export class PassportAuthController {
     return req.user;
   }
 
+  @Get('current-user-bearer')
+  @UseGuards(JwtBearerAuthGuard)
+  getCurrentUserBearer(@CurrentUser('email') email: ICurrentUser['email']) {
+    return email;
+  }
+
   @Get('public-bearer')
   @Public()
   @UseGuards(JwtBearerAuthGuard)
@@ -41,7 +49,7 @@ export class PassportAuthController {
 
   @Get('logout-bearer')
   logoutBearer() {
-    return 'Nothing to perform here, maybe you want to clear the cookie? 🤷‍♂️';
+    return 'Nothing to perform here, maybe you want to revoke the token? 🤷‍♂️';
   }
 
   /* Http-only Cookie Implementations */
@@ -68,6 +76,12 @@ export class PassportAuthController {
   @UseGuards(JwtCookieAuthGuard)
   getProfileCookie(@Req() req: Request) {
     return req.user;
+  }
+
+  @Get('current-user-cookie')
+  @UseGuards(JwtCookieAuthGuard)
+  getCurrentUserCookie(@CurrentUser('email') email: ICurrentUser['email']) {
+    return email;
   }
 
   @Get('public-cookie')

@@ -22,3 +22,6 @@ export interface PluginOptions {
   controllerKeyOfComment?: string;
   introspectComments?: boolean;
 }
+
+
+// This change is done to test the git reset head command
